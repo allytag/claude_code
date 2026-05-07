@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.codex.openrouter-claude-proxy</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>__NODE__</string>
+    <string>__HOME__/.claude/openrouter-claude-proxy/server.mjs</string>
+  </array>
+  <key>WorkingDirectory</key>
+  <string>__HOME__/.claude/openrouter-claude-proxy</string>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+  <key>StandardOutPath</key>
+  <string>__HOME__/.claude/logs/openrouter-claude-proxy.log</string>
+  <key>StandardErrorPath</key>
+  <string>__HOME__/.claude/logs/openrouter-claude-proxy.err.log</string>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>CLAUDE_OPENROUTER_PROXY_PORT</key>
+    <string>4141</string>
+    <key>DISABLE_TELEMETRY</key>
+    <string>1</string>
+    <key>OPENROUTER_PROXY_DEBUG_TOKENS</key>
+    <string>1</string>
+    <key>OPENROUTER_PROXY_PROMPT_CACHE</key>
+    <string>auto</string>
+    <key>OPENROUTER_PROXY_PIN_PROVIDER</key>
+    <string>1</string>
+    <key>OPENROUTER_PROXY_REMAP_INTERNAL_HAIKU</key>
+    <string>1</string>
+  </dict>
+</dict>
+</plist>

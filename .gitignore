@@ -1,0 +1,13 @@
+.DS_Store
+.git/
+node_modules/
+*.log
+*.jsonl
+*codex-backup*
+*opus-backup*
+*.failed-*
+state.vscdb.backup
+openrouter-claude-proxy-last-metrics.json
+openrouter-claude-proxy-metrics.jsonl
+last-safe-update.json
+preflight.json

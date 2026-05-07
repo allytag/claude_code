@@ -1,0 +1,4 @@
+#!/bin/zsh
+# Resolves "kimi-k2.6" via the registry so the underlying model id is always correct
+# even when model versions or aliases change. claude-model = modelctl exec-model.
+exec __HOME__/.local/bin/claude-model kimi-k2.6 "$@"

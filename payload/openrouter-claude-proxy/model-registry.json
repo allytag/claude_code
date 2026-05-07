@@ -1,0 +1,239 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-05-07-lts-template",
+  "notes": [
+    "Catalog pricing and observed/effective pricing are intentionally separate.",
+    "Full Claude Code mode must never be rewritten into low-token mode.",
+    "Provider pinning verified effective for Kimi+Novita: t1->t2 cost dropped from $0.0205 to $0.0088 (57% reduction with cache_read=16896).",
+    "Recommended runtime: PROMPT_CACHE=auto + PIN_PROVIDER=1.",
+    "Internal Claude Code Haiku background calls can be remapped to cheapFull when strict safety gates pass.",
+    "Reasoning pass-through is registry gated; effort high alone is not enough unless model compatibility.reasoningPassThrough=true."
+  ],
+  "roles": {
+    "main": "kimi-k2.6",
+    "cheapFull": "qwen3.6-plus",
+    "hard": "deepseek-v4-pro",
+    "subagent": "qwen3.6-plus",
+    "lowToken": "qwen3.6-plus",
+    "backup": "deepseek-v4-pro",
+    "compare": "glm-5.1"
+  },
+  "claudeSlots": {
+    "defaultSlot": "sonnet",
+    "sonnet": "main",
+    "haiku": "cheapFull",
+    "opus": "hard",
+    "custom": "compare",
+    "subagent": "subagent"
+  },
+  "remaps": {
+    "internalHaiku": {
+      "enabled": true,
+      "sourceModelPatterns": [
+        "claude-haiku-*",
+        "claude-*-haiku*",
+        "anthropic/claude-haiku-*",
+        "anthropic/claude-*-haiku*"
+      ],
+      "targetRole": "cheapFull",
+      "safety": {
+        "requireClaudeCliSource": true,
+        "maxMessages": 2,
+        "maxSystemChars": 2000,
+        "maxToolCount": 0,
+        "maxToolSchemaBytes": 16,
+        "maxRequestBodyBytes": 4096
+      },
+      "notes": "Only remaps tiny Claude Code internal Haiku-shaped background calls. Full Claude Code tool requests are not remapped."
+    }
+  },
+  "models": {
+    "deepseek-v4-pro": {
+      "id": "deepseek/deepseek-v4-pro",
+      "displayName": "DeepSeek V4 Pro",
+      "description": "Hard reasoning and large-context coding candidate. Current listed pricing is cheaper than Kimi, but observed billing must be measured per provider.",
+      "catalog": {
+        "source": "user-provided-openrouter-listed",
+        "checkedAt": "2026-05-06",
+        "contextTokens": 1048576,
+        "inputUsdPerMTok": 0.435,
+        "outputUsdPerMTok": 0.87,
+        "cacheWriteUsdPerMTok": null,
+        "cacheReadUsdPerMTok": null
+      },
+      "observed": {
+        "source": "local-transcript",
+        "updatedAt": "2026-05-06",
+        "sampleCount": 3,
+        "latestProvider": "AtlasCloud",
+        "latestInputTokens": 25551,
+        "latestOutputTokens": 25,
+        "latestCacheCreationTokens": null,
+        "latestCacheReadTokens": 0,
+        "latestCostUsd": 0.043522,
+        "effectiveInputUsdPerMTok": null,
+        "notes": "Pass A 2 turns: minimal cache_read (0->1536), high cost $0.040+/turn. Effective ~$1.70/M input vs $0.435 catalog (4x markup at AtlasCloud)."
+      },
+      "compatibility": {
+        "toolUse": "needs-real-test",
+        "fileEdit": "needs-real-test",
+        "streaming": "observed-ok",
+        "cacheBehavior": "weak-cache-read-observed",
+        "reasoningPassThrough": true
+      }
+    },
+    "kimi-k2.6": {
+      "id": "moonshotai/kimi-k2.6",
+      "displayName": "Kimi K2.6",
+      "description": "Current main coding role. Listed pricing higher than DeepSeek input/output; observed provider/cost must be measured.",
+      "catalog": {
+        "source": "user-provided-openrouter-listed",
+        "checkedAt": "2026-05-06",
+        "contextTokens": 262144,
+        "inputUsdPerMTok": 0.75,
+        "outputUsdPerMTok": 3.5,
+        "cacheWriteUsdPerMTok": null,
+        "cacheReadUsdPerMTok": null
+      },
+      "observed": {
+        "source": "local-proxy-metrics-and-transcript",
+        "updatedAt": "2026-05-06",
+        "sampleCount": 4,
+        "latestProvider": "Novita",
+        "latestInputTokens": 21117,
+        "latestOutputTokens": 28,
+        "latestCacheCreationTokens": null,
+        "latestCacheReadTokens": 16896,
+        "latestCostUsd": 0.020501,
+        "effectiveInputUsdPerMTok": null,
+        "notes": "Pass A cache test showed cache_read 2048->16896 across 2 turns; turn-2 cost dropped 57% (Novita)."
+      },
+      "compatibility": {
+        "toolUse": "needs-real-test",
+        "fileEdit": "needs-real-test",
+        "streaming": "observed-ok",
+        "cacheBehavior": "cache-read-observed",
+        "reasoningPassThrough": false
+      }
+    },
+    "qwen3.6-plus": {
+      "id": "qwen/qwen3.6-plus",
+      "displayName": "Qwen 3.6 Plus",
+      "description": "Cheap full-mode, subagent, and low-token candidate. Large context. Needs tool/file edit test.",
+      "catalog": {
+        "source": "user-provided-openrouter-listed",
+        "checkedAt": "2026-05-06",
+        "contextTokens": 1000000,
+        "inputUsdPerMTok": 0.325,
+        "outputUsdPerMTok": 1.95,
+        "cacheWriteUsdPerMTok": null,
+        "cacheReadUsdPerMTok": null
+      },
+      "observed": {
+        "source": "local-transcript",
+        "updatedAt": "2026-05-06",
+        "sampleCount": 4,
+        "latestProvider": "Alibaba",
+        "latestInputTokens": 6,
+        "latestOutputTokens": 28,
+        "latestCacheCreationTokens": 25697,
+        "latestCacheReadTokens": 0,
+        "latestCostUsd": 0.010488,
+        "effectiveInputUsdPerMTok": null,
+        "notes": "Pass A 2 turns: cache_read=0 both turns; Alibaba reports cache via cache_creation only. Cost stable ~$0.0105/turn regardless."
+      },
+      "compatibility": {
+        "toolUse": "needs-real-test",
+        "fileEdit": "needs-real-test",
+        "streaming": "observed-ok",
+        "cacheBehavior": "cache-create-only-observed",
+        "reasoningPassThrough": false
+      }
+    },
+    "glm-5.1": {
+      "id": "z-ai/glm-5.1",
+      "displayName": "GLM 5.1",
+      "description": "Comparison model.",
+      "catalog": {
+        "source": "unknown",
+        "checkedAt": null,
+        "contextTokens": null,
+        "inputUsdPerMTok": null,
+        "outputUsdPerMTok": null,
+        "cacheWriteUsdPerMTok": null,
+        "cacheReadUsdPerMTok": null
+      },
+      "observed": {
+        "source": "local-transcript",
+        "updatedAt": "2026-05-06",
+        "sampleCount": 1,
+        "latestProvider": "Z.AI",
+        "latestInputTokens": 25709,
+        "latestOutputTokens": 3,
+        "latestCacheCreationTokens": 0,
+        "latestCacheReadTokens": 64,
+        "latestCostUsd": null,
+        "effectiveInputUsdPerMTok": null,
+        "notes": "Tiny cache_read observed; no cost field."
+      },
+      "compatibility": {
+        "toolUse": "needs-real-test",
+        "fileEdit": "needs-real-test",
+        "streaming": "observed-ok",
+        "cacheBehavior": "tiny-cache-read-observed",
+        "reasoningPassThrough": false
+      }
+    },
+    "hy3-preview-free": {
+      "id": "tencent/hy3-preview:free",
+      "displayName": "Tencent HY3 Preview Free",
+      "description": "Added locally. Catalog pricing unknown until pricing refresh or manual update.",
+      "catalog": {
+        "source": "unknown",
+        "checkedAt": null,
+        "contextTokens": null,
+        "inputUsdPerMTok": null,
+        "outputUsdPerMTok": null,
+        "cacheWriteUsdPerMTok": null,
+        "cacheReadUsdPerMTok": null
+      },
+      "observed": {
+        "source": "none",
+        "updatedAt": null,
+        "sampleCount": 0,
+        "latestProvider": null,
+        "latestInputTokens": null,
+        "latestOutputTokens": null,
+        "latestCacheCreationTokens": null,
+        "latestCacheReadTokens": null,
+        "latestCostUsd": null,
+        "effectiveInputUsdPerMTok": null,
+        "notes": "No local request observed yet."
+      },
+      "compatibility": {
+        "toolUse": "needs-real-test",
+        "fileEdit": "needs-real-test",
+        "streaming": "needs-real-test",
+        "cacheBehavior": "needs-real-test",
+        "reasoningPassThrough": false
+      }
+    }
+  },
+  "benchmarkSuites": {
+    "smoke": {
+      "description": "Route, metrics, tiny answer, no tools.",
+      "estimatedFullModeInputTokens": 30000,
+      "estimatedOutputTokens": 250
+    },
+    "cache": {
+      "description": "Two-turn same-session cache_read check.",
+      "estimatedFullModeInputTokens": 60000,
+      "estimatedOutputTokens": 500
+    },
+    "tool": {
+      "description": "Temp-dir small file edit and tool workflow.",
+      "estimatedFullModeInputTokens": 80000,
+      "estimatedOutputTokens": 1000
+    }
+  }
+}

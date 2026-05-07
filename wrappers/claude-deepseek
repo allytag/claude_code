@@ -1,0 +1,3 @@
+#!/bin/zsh
+# Resolves "deepseek-v4-pro" via the registry. claude-model = modelctl exec-model.
+exec __HOME__/.local/bin/claude-model deepseek-v4-pro "$@"

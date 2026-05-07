@@ -1,0 +1,28 @@
+{
+  "env": {
+    "ANTHROPIC_BASE_URL": "http://127.0.0.1:4141",
+    "ANTHROPIC_AUTH_TOKEN": "OPENROUTER_KEY_ENTERED_DURING_INSTALL",
+    "ANTHROPIC_API_KEY": "",
+    "DISABLE_TELEMETRY": "1",
+    "DISABLE_AUTOUPDATER": "1",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL": "deepseek/deepseek-v4-pro",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL_NAME": "DeepSeek V4 Pro",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL_DESCRIPTION": "Hard reasoning and large-context coding candidate. Observed billing must be measured per provider.",
+    "ANTHROPIC_DEFAULT_SONNET_MODEL": "moonshotai/kimi-k2.6",
+    "ANTHROPIC_DEFAULT_SONNET_MODEL_NAME": "Kimi K2.6",
+    "ANTHROPIC_DEFAULT_SONNET_MODEL_DESCRIPTION": "Main model for coding, feature implementation, refactors, and production-grade project building.",
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "qwen/qwen3.6-plus",
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL_NAME": "Qwen 3.6 Plus",
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL_DESCRIPTION": "Cheap full-mode, subagent, and low-token candidate.",
+    "CLAUDE_CODE_SUBAGENT_MODEL": "qwen/qwen3.6-plus",
+    "ANTHROPIC_CUSTOM_MODEL_OPTION": "z-ai/glm-5.1",
+    "ANTHROPIC_CUSTOM_MODEL_OPTION_NAME": "GLM 5.1",
+    "ANTHROPIC_CUSTOM_MODEL_OPTION_DESCRIPTION": "Comparison model."
+  },
+  "model": "sonnet",
+  "alwaysThinkingEnabled": false,
+  "effortLevel": "high",
+  "enabledPlugins": {
+    "caveman@caveman": false
+  }
+}

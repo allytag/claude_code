@@ -1,0 +1,163 @@
+{
+  "ltsVersion": "2026.05.07-1",
+  "generatedAt": "2026-05-07T14:23:16.942Z",
+  "platform": "macos-arm64",
+  "nodeVersionMin": "20.0.0",
+  "claudeCliMin": "2.1.131",
+  "claudeCliMax": "2.1.999",
+  "vscodeExtensionMin": "2.1.131",
+  "files": {
+    ".gitignore": {
+      "size": 220,
+      "sha256": "85258dddc15b1d7ba261300be5290382ed508a9ddc563cfa989f4394340a009b"
+    },
+    "LICENSE": {
+      "size": 1096,
+      "sha256": "b45c4758c0028ce4272416d367fc83849d0fd7e0d2e9a37260fe7c71bd9baf26"
+    },
+    "README.md": {
+      "size": 10950,
+      "sha256": "82079b204e03f6412af4a4226ea5100280cfe6b959adc4833eca210bf412b578"
+    },
+    "docs/ARCHITECTURE.md": {
+      "size": 8375,
+      "sha256": "3a5b1f1e99956385fb8075fe3dddebce0c703e63c921a90911c9e1e072e4c802"
+    },
+    "docs/INSTALL.md": {
+      "size": 4749,
+      "sha256": "35bb1b1751e6f13582b01a77d39c87413a1ca4e5d2dc87af71971fbcc688d877"
+    },
+    "docs/SECURITY.md": {
+      "size": 5316,
+      "sha256": "0a20462247e796c5e435e320697a88c9bc5696ffaa6c3e34c180c719d2d00e3f"
+    },
+    "docs/TROUBLESHOOTING.md": {
+      "size": 5732,
+      "sha256": "dacd567268ed7825fdc65d7c65d358b8816166b8da2a242a86fdcfac57da0d75"
+    },
+    "docs/UPDATE.md": {
+      "size": 3751,
+      "sha256": "48c506d0b7f8c73b7edf0d5037ee9da8d97ffa884aec3bd42e906d9aaa4f0146"
+    },
+    "install.sh": {
+      "size": 85,
+      "sha256": "b9830469612b2b45acf327882c9969652fdaa465afd4dfc377e43d6a1add5944"
+    },
+    "payload/openrouter-claude-proxy/README.md": {
+      "size": 10526,
+      "sha256": "5e2f5979cec6641dfb84d021e759b636b9eaa4c1d9d274570ea50611ff2889c6"
+    },
+    "payload/openrouter-claude-proxy/claude-env.mjs": {
+      "size": 1850,
+      "sha256": "860f074cc2de30cee52cad803633af47ffd4200a6c99df5714d5f5e26d0a40be"
+    },
+    "payload/openrouter-claude-proxy/claude-low.mjs": {
+      "size": 4262,
+      "sha256": "344c0bdfbac7708bbb7ba84af6ed2b15d609cb1141890c0e013a0ecbcda88b1b"
+    },
+    "payload/openrouter-claude-proxy/doctor.mjs": {
+      "size": 21339,
+      "sha256": "3e26be2307a1cc8e0345032b64342fb104ce980e9289e4ef309e1311daf3f972"
+    },
+    "payload/openrouter-claude-proxy/model-registry.json": {
+      "size": 8390,
+      "sha256": "9fa16b0b059b7254916b5a630425bb08784d11c2e7db8debb710391e2816630c"
+    },
+    "payload/openrouter-claude-proxy/modelctl.mjs": {
+      "size": 46434,
+      "sha256": "fa6aa1b51c85f7a459f67e7a511f797da43facf25b8b747fb94bdcddc581beff"
+    },
+    "payload/openrouter-claude-proxy/package.json": {
+      "size": 345,
+      "sha256": "eefee8c69a75a5f4e27b68609c139b3364b444fcfea926726141afd9cb3b127a"
+    },
+    "payload/openrouter-claude-proxy/patch-extension.mjs": {
+      "size": 7310,
+      "sha256": "dc74c99d11e79a3a90388a806e682115788876b4bf482c540b7500df377e2c56"
+    },
+    "payload/openrouter-claude-proxy/safe-update.mjs": {
+      "size": 13551,
+      "sha256": "397839310ed7470bcabd8f87ef763e228bfffec32dd905fed28007bdeb1b3cf6"
+    },
+    "payload/openrouter-claude-proxy/server.mjs": {
+      "size": 32594,
+      "sha256": "2a8ffd39dbb7c6f2c8d278e45fc076d8b7f9fb308d90556a39f02808183110ce"
+    },
+    "scripts/build-manifest.mjs": {
+      "size": 1927,
+      "sha256": "1dc3802cc6e5d4a53138a28ec650555bf4f3c12b547e1d6e8267d40bac759ac6"
+    },
+    "scripts/doctor-local.mjs": {
+      "size": 1958,
+      "sha256": "40b5591d944de864bd08581a35821424010e33bbd75fd6fac66db8b68d92201d"
+    },
+    "scripts/install.mjs": {
+      "size": 22147,
+      "sha256": "1b04629cada8158a39983a0a81befbea6e78d75e7250661ff7bf863f78e6714a"
+    },
+    "scripts/redact-check.mjs": {
+      "size": 1539,
+      "sha256": "f09c355d92f3b853ac55daf87e5f6b7b562c700d53538e991f5a1f2dc199a6cf"
+    },
+    "templates/launchagent.plist.template": {
+      "size": 1234,
+      "sha256": "b6259fee394caa1fb36d9c7a088821498f11ad426e0aa0c890783f6e2c2f80e6"
+    },
+    "templates/settings.json.template": {
+      "size": 1359,
+      "sha256": "4e1b62dce5149c466c4ff6333f1a26568fd15ce2754214a81471a7618153993b"
+    },
+    "templates/vscode-settings.patch.json": {
+      "size": 193,
+      "sha256": "da995d915b122cdf5a3e7815322314fbd5447b3ba30aede08180d34c393fd23b"
+    },
+    "uninstall.sh": {
+      "size": 362,
+      "sha256": "cd3266e10d99cb5cd3d02ab562d37a3876920376f0bcc574338c90e58839beb6"
+    },
+    "verify.sh": {
+      "size": 110,
+      "sha256": "48ff69c9e7c47599a42c1dcd2c7305e377e089c4bfecaaa7e5ef0afa85bf4514"
+    },
+    "wrappers/claude-deepseek": {
+      "size": 153,
+      "sha256": "4bbc6cb4de1658bbe985b0abb43eb621465c62546e11679a44229ca76aa8d707"
+    },
+    "wrappers/claude-full": {
+      "size": 86,
+      "sha256": "847cdf35419ef8ebec2e44f4764251d8d768ee0e755f64c904f63d1a7298843f"
+    },
+    "wrappers/claude-kimi": {
+      "size": 231,
+      "sha256": "00a6b0f6f3a5a8bcc5e958ce020ec400f088b25004c05b1ba607a3c10e51c19a"
+    },
+    "wrappers/claude-low": {
+      "size": 86,
+      "sha256": "c6404d7d441945f327b377ccc343e342177577c5e0206294800f648011d406d6"
+    },
+    "wrappers/claude-model": {
+      "size": 95,
+      "sha256": "2ade39ad8b0364512ba0c771d45d9168819f51d977b1a5c17ac3134a57c1773c"
+    },
+    "wrappers/claude-qwen": {
+      "size": 147,
+      "sha256": "1ca75daacacde4712fce2e47817fbfc66ae4f1adae517a30744a93032a1614e3"
+    },
+    "wrappers/claude-role": {
+      "size": 94,
+      "sha256": "f2af05d17ec70c05c615fa964ef441adb2028002efa1c020bd9bb1a795a298a9"
+    },
+    "wrappers/claude-router": {
+      "size": 84,
+      "sha256": "971eaa5a7ba14c67e4b6e714b11a71b23c4d9e29b17ba3d33f3d44d63c494c62"
+    },
+    "wrappers/claude-safe-update": {
+      "size": 87,
+      "sha256": "0f1861724037cce6a397e73c581e8ddc101711bed23a269b82a7b07374ebc225"
+    },
+    "wrappers/or-model": {
+      "size": 84,
+      "sha256": "971eaa5a7ba14c67e4b6e714b11a71b23c4d9e29b17ba3d33f3d44d63c494c62"
+    }
+  }
+}
