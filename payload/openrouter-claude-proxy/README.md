@@ -61,9 +61,10 @@ Safe Claude CLI update:
 ```sh
 claude-safe-update latest --dry-run
 claude-safe-update latest
+claude-safe-update latest --probe --allow-model-call --probe-budget-usd 0.25
 ```
 
-`claude-safe-update` snapshots the current working binary, quarantines zero-byte failed downloads, runs official `claude install <target>` only after preflight passes, validates proxy/doctor/extension patches, and restores the old symlink or snapshot on failure. It writes `__HOME__/.claude/logs/last-safe-update.json` only after an accepted update. No model call runs unless explicitly invoked with `--probe --allow-model-call`.
+`claude-safe-update` snapshots the current working binary and Claude Code VS Code extension, quarantines zero-byte failed downloads, runs official `claude install <target>` and `code --install-extension` only after preflight passes, applies extension patches, validates proxy/doctor/patch status, and restores CLI + extension snapshots on critical failure. It writes `__HOME__/.claude/logs/last-safe-update.json` only after an accepted update. No model call runs unless explicitly invoked with `--probe --allow-model-call`.
 
 Low-token mode:
 
@@ -108,12 +109,13 @@ claude-role main -p "say hi"
 Cleanup (always dry-run unless `--apply`):
 
 ```sh
-claude-router cleanup                                  # default safe categories (trash, old-backups>30d, empty-dirs, benchmarks)
+claude-router cleanup                                  # default safe categories (trash, old-backups>30d, empty-dirs, extension-snapshots, benchmarks)
 claude-router cleanup all-safe                         # all safe categories with their default ages
 claude-router cleanup sessions --older-than 14d        # ~/.claude/projects/*/<uuid>.jsonl older than 14 days
 claude-router cleanup backups --older-than 0d          # alias for old-backups; keeps most recent per source file
 claude-router cleanup old-backups --older-than 0d      # same as backups
 claude-router cleanup shell-snapshots --older-than 7d
+claude-router cleanup extension-snapshots --older-than 14d
 claude-router cleanup trash                            # .opus-trash-* files
 claude-router cleanup empty-dirs                       # leftover empty UUID dirs in file-history/session-env
 claude-router cleanup all-safe --apply                 # actually delete after reviewing dry-run
@@ -229,13 +231,15 @@ Reasoning policy:
 Telemetry and cleanup:
 
 - `DISABLE_TELEMETRY=1` is set for Claude Code path, not Claude Desktop.
-- Cleanup categories include `file-history` and `telemetry`.
+- Cleanup categories include `file-history`, `extension-snapshots`, and `telemetry`.
 - `file-history` cleanup deletes only whole old UUID dirs, keeps newest dir, never partial files.
+- `extension-snapshots` cleanup deletes only whole old safe-update snapshot dirs, keeps newest snapshot.
 - `telemetry` cleanup deletes only `telemetry/1p_failed_events*.json`.
 
 ```sh
 claude-router cleanup all-safe
 claude-router cleanup file-history --older-than 30d --apply
+claude-router cleanup extension-snapshots --older-than 14d --apply
 claude-router cleanup telemetry --older-than 14d --apply
 ```
 

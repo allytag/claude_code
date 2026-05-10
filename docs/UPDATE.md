@@ -23,9 +23,9 @@ After update:
 node ~/.claude/openrouter-claude-proxy/doctor.mjs
 ```
 
-## Update Claude Code CLI (snapshot + rollback)
+## Update Claude Code CLI + VS Code Extension (snapshot + rollback)
 
-**Always use `claude-safe-update`. Never use raw `claude install` or `claude update`.**
+**Always use `claude-safe-update`. Never use raw `claude install`, `claude update`, or manual extension update as the main path.**
 
 ```sh
 claude-safe-update latest --dry-run    # preview
@@ -36,10 +36,12 @@ What it does:
 
 ```mermaid
 flowchart LR
-    A[snapshot current binary] --> B[install new version]
-    B --> C{validate}
-    C -->|all pass| D[keep new version,<br/>write breadcrumb]
-    C -->|any fail| E[restore symlink to snapshot,<br/>quarantine bad files]
+    A[snapshot CLI binary<br/>snapshot VS Code extension] --> B[install CLI version]
+    B --> C[install VS Code extension]
+    C --> D[patch extension]
+    D --> E{validate}
+    E -->|all pass| F[keep new version,<br/>write breadcrumb]
+    E -->|critical fail| G[restore CLI symlink/snapshot,<br/>restore extension snapshot]
 ```
 
 Validation checks:
@@ -48,19 +50,25 @@ Validation checks:
 - `claude --version` works
 - `doctor` reports proxy OK, drift false, no extension mismatch
 - Proxy health responds
-- Extension patch dry-run passes
+- Extension patch applies and reports expected status
 
 If anything fails, your old version stays active. You will not be left in a broken state.
 
-### Optional: post-update model probe
-
-This spends a tiny amount of OpenRouter credit (~$0.001) to confirm the new CLI version still produces correct request shape:
+If you need CLI-only update for emergency debugging:
 
 ```sh
-claude-safe-update latest --probe --allow-model-call
+claude-safe-update latest --skip-extension
 ```
 
-**Both flags required.** `--probe` alone does not spend tokens; `--allow-model-call` is the explicit consent to spend.
+### Optional: post-update model probe
+
+This spends OpenRouter credit to confirm the new CLI version still produces correct request shape:
+
+```sh
+claude-safe-update latest --probe --allow-model-call --probe-budget-usd 0.25
+```
+
+`--probe` alone does not spend tokens; `--allow-model-call` is explicit consent. `--probe-budget-usd` defaults to `0.25` because Claude Code's full tool contract can exceed tiny local budget caps even for a short prompt.
 
 ### Manual rollback
 
@@ -71,6 +79,8 @@ ls ~/.claude/binary-snapshots/
 ln -sfn ~/.claude/binary-snapshots/claude-2.1.131-<hash> ~/.local/bin/claude
 claude --version    # confirm
 ```
+
+Extension snapshots live at `~/.claude/extension-snapshots/`. `claude-safe-update` restores them automatically on critical failure. Manual restore is only for advanced recovery.
 
 ## Why Auto-Update Is Disabled
 
@@ -83,7 +93,7 @@ The `claude-safe-update` command is the **only** sanctioned update path.
 
 ## Update VS Code Extension
 
-The extension auto-updates via VS Code marketplace. The installer's LaunchAgent re-runs the patcher every 60 s, so any new extension version is auto-patched within a minute:
+Preferred path is now `claude-safe-update`, which updates CLI and extension together. The LaunchAgent still re-runs the patcher every 60 s, so any marketplace auto-update is auto-patched within a minute:
 
 ```sh
 node ~/.claude/openrouter-claude-proxy/patch-extension.mjs --dry-run    # check status

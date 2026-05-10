@@ -41,7 +41,7 @@ function usage(topic = "") {
   ${cmd} cleanup [<category>] [--older-than <Nd|Nh>] [--apply]
     Categories: trash | logs | metrics | sessions | shell-snapshots
                 old-backups | backups | empty-dirs | file-history
-                telemetry | benchmarks | all-safe
+                extension-snapshots | telemetry | benchmarks | all-safe
     Default is dry-run; pass --apply to actually delete. Default age varies per category.
 
 Guides:
@@ -127,6 +127,7 @@ Rules:
   - Newest backup per source kept.
   - settings.json and settings.json.* backups protected.
   - file-history cleanup deletes only old whole UUID dirs, never partial files.
+  - extension-snapshots cleanup deletes only old safe-update snapshot dirs, keeping newest.
   - telemetry cleanup only targets failed-event json files.
   - Claude Desktop/plugins/caveman protected.`);
 }
@@ -836,6 +837,7 @@ const CLEANUP_DEFAULTS = {
   metrics: 14,
   sessions: 30,
   "shell-snapshots": 14,
+  "extension-snapshots": 14,
   "old-backups": 30,
   "empty-dirs": 0,
   "file-history": 30,
@@ -928,6 +930,34 @@ async function buildShellSnapshots(olderMs) {
     if (now - s.mtimeMs >= olderMs) found.push(p);
   }
   return found;
+}
+
+async function buildExtensionSnapshots(olderMs) {
+  // Safe-update extension snapshots can be large. Delete only whole snapshot dirs older
+  // than threshold by newest descendant mtime; keep newest snapshot as rollback safety.
+  const root = "__HOME__/.claude/extension-snapshots";
+  const now = Date.now();
+  let entries;
+  try {
+    entries = await fs.readdir(root, { withFileTypes: true });
+  } catch {
+    return [];
+  }
+
+  const dirs = [];
+  for (const entry of entries) {
+    if (!entry.isDirectory()) continue;
+    if (!entry.name.startsWith("claude-code-extensions-")) continue;
+    const dir = `${root}/${entry.name}`;
+    if (isProtectedPath(dir)) continue;
+    dirs.push({ dir, newest: await newestMtimeMs(dir) });
+  }
+  dirs.sort((a, b) => b.newest - a.newest);
+  const keepNewest = dirs[0]?.dir;
+
+  return dirs
+    .filter(({ dir, newest }) => dir !== keepNewest && now - newest >= olderMs)
+    .map(({ dir }) => dir);
 }
 
 async function buildOldBackups(olderMs) {
@@ -1056,6 +1086,7 @@ const CLEANUP_BUILDERS = {
   metrics: buildMetrics,
   sessions: buildSessions,
   "shell-snapshots": buildShellSnapshots,
+  "extension-snapshots": buildExtensionSnapshots,
   "old-backups": buildOldBackups,
   "empty-dirs": buildEmptyDirs,
   "file-history": buildFileHistory,
@@ -1070,7 +1101,7 @@ async function cmdCleanup(args) {
     ? [category]
     : (category === "all-safe"
       ? CLEANUP_CATEGORIES
-      : ["trash", "old-backups", "empty-dirs", "file-history", "telemetry", "benchmarks"]);
+      : ["trash", "old-backups", "empty-dirs", "file-history", "extension-snapshots", "telemetry", "benchmarks"]);
   const apply = Boolean(opts.apply);
 
   for (const cat of requested) {

@@ -146,13 +146,14 @@ claude-router cleanup all-safe        # dry-run preview
 claude-router cleanup all-safe --apply
 ```
 
-Categories: `trash`, `logs`, `metrics`, `sessions`, `shell-snapshots`, `old-backups`, `empty-dirs`, `file-history`, `telemetry`, `benchmarks`. Always dry-run first.
+Categories: `trash`, `logs`, `metrics`, `sessions`, `shell-snapshots`, `old-backups`, `empty-dirs`, `file-history`, `extension-snapshots`, `telemetry`, `benchmarks`. Always dry-run first.
 
-### Update Claude CLI (always use safe-update)
+### Update Claude Code (always use safe-update)
 
 ```sh
 claude-safe-update latest --dry-run
 claude-safe-update latest
+claude-safe-update latest --probe --allow-model-call --probe-budget-usd 0.25
 ```
 
 See [UPDATE.md](UPDATE.md).

@@ -351,6 +351,7 @@ function cleanupPolicySummary() {
     newestBackupPerSourceKept: true,
     settingsJsonBackupsProtected: true,
     fileHistoryPolicy: "delete whole UUID dirs older than threshold, never partial files, keep newest dir",
+    extensionSnapshotPolicy: "delete whole safe-update extension snapshot dirs older than threshold, keep newest snapshot",
     telemetryPolicy: "delete only telemetry/1p_failed_events*.json older than threshold",
     protectedTrees: [
       "__HOME__/Library/Application Support/Claude",
@@ -378,14 +379,25 @@ function summarizeSafeUpdate(record, activeVersion, recentMetrics) {
   const newVersion = record.newVersion || "unknown";
   const activeMatchesRecord = activeVersion === newVersion;
   const recordTime = Date.parse(record.timestamp || "");
-  const failedAfterRecord = Number.isFinite(recordTime)
+  const failuresAfterRecord = Number.isFinite(recordTime)
     ? recentMetrics.filter((item) => {
         const ts = Date.parse(item?.timestamp || "");
         return Number.isFinite(ts) && ts > recordTime && item?.upstreamStatus && item.upstreamStatus >= 400;
-      }).length
+      })
     : 0;
+  const failedAfterRecord = Array.isArray(failuresAfterRecord) ? failuresAfterRecord.length : 0;
+  const modelNotFoundFailures = Array.isArray(failuresAfterRecord)
+    ? failuresAfterRecord.filter((item) => item.upstreamStatus === 404 && item.selectedModel).length
+    : 0;
+  const seriousFailures = Array.isArray(failuresAfterRecord)
+    ? failuresAfterRecord.filter((item) => {
+        if (item.upstreamStatus === 404 && item.selectedModel) return false;
+        return item.upstreamStatus >= 400;
+      })
+    : [];
   let status = activeMatchesRecord ? "active-version-matches-last-safe-update" : "active-version-differs-from-last-safe-update";
-  if (failedAfterRecord > 0) status = "post-update-regression-suspected";
+  if (seriousFailures.length > 0) status = "post-update-regression-suspected";
+  else if (modelNotFoundFailures > 0) status = "post-update-model-404-observed";
   return {
     configured: true,
     path: LAST_SAFE_UPDATE,
@@ -397,8 +409,24 @@ function summarizeSafeUpdate(record, activeVersion, recentMetrics) {
     oldVersion: record.oldVersion,
     newVersion,
     snapshotPath: record.snapshot?.path || null,
+    extensionSnapshotPath: record.extensionSnapshot?.path || null,
+    extensionSnapshotCount: record.extensionSnapshot?.count ?? null,
     validationOk: record.validation?.ok === true,
     failedProxyCallsAfterRecord: failedAfterRecord,
+    seriousProxyFailuresAfterRecord: seriousFailures.length,
+    modelNotFoundFailuresAfterRecord: modelNotFoundFailures,
+    lastFailureSummary: Array.isArray(failuresAfterRecord)
+      ? failuresAfterRecord.slice(-3).map((item) => ({
+          timestamp: item.timestamp,
+          source: item.source,
+          selectedModel: item.selectedModel,
+          actualModel: item.actualModel,
+          upstreamStatus: item.upstreamStatus,
+          provider: item.provider,
+          requestBodyBytes: item.requestBodyBytes,
+          toolCount: item.toolCount,
+        }))
+      : [],
     probe: record.validation?.probe || null,
   };
 }

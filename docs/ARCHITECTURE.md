@@ -145,10 +145,12 @@ flowchart TD
     A[claude-safe-update latest] --> B[Pre-flight]
     B --> C{disk OK?<br/>network OK?<br/>no zero-byte file?}
     C -->|no| X1[abort, no writes]
-    C -->|yes| D[Snapshot current binary<br/>~/.claude/binary-snapshots/]
+    C -->|yes| D[Snapshot CLI binary<br/>snapshot VS Code extension]
     D --> E[Run 'claude install latest'<br/>with timeout]
-    E --> F{Validate:<br/>size ≥ MIN<br/>executable<br/>--version OK<br/>doctor OK<br/>proxy health<br/>patch dry-run}
-    F -->|fail| G[Restore symlink to snapshot]
+    E --> E2[Run 'code --install-extension'<br/>with timeout]
+    E2 --> E3[Patch extension]
+    E3 --> F{Validate:<br/>size ≥ MIN<br/>executable<br/>--version OK<br/>doctor OK<br/>proxy health<br/>patch status}
+    F -->|fail| G[Restore CLI snapshot<br/>restore extension snapshot]
     F -->|pass| H[Write breadcrumb<br/>last-safe-update.json]
     H --> I[Done — new version active,<br/>snapshot kept for rollback]
     G --> X2[Quarantine bad files,<br/>old version still active]

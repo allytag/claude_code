@@ -11,7 +11,7 @@ What this installer protects, what it does not, and how to verify.
 | Caveman or other user plugins corrupted | `~/.claude/plugins` and `~/plugins/caveman` in cleanup-protected list |
 | Hidden reasoning tokens billed silently | Proxy strips `thinking`/`reasoning` by default; pass-through only for registry-allowlisted models on `/effort high` |
 | Provider rotation breaks cache → unexpected cost | Provider pinning via registry observed data |
-| Auto-update bricks Claude CLI | `claude-safe-update` snapshots binary, validates, rolls back on failure |
+| Auto-update bricks Claude Code | `claude-safe-update` snapshots CLI + VS Code extension, validates, rolls back on failure |
 | Settings.json env block ignored by Claude CLI | `claude-env.mjs` re-injects from settings on every wrapper invocation |
 | Repo-cloned to a Mac where Claude Code isn't installed | Installer refuses with explicit install instructions |
 | User runs install on dirty target | `--fresh` mode refuses; `--merge` preserves unrelated keys |
@@ -111,10 +111,11 @@ To audit: `cat ~/.claude/logs/openrouter-claude-proxy-last-metrics.json`.
 
 `claude-safe-update`:
 - Snapshots the current Claude Code binary to `~/.claude/binary-snapshots/` before update
-- Validates new binary (size, executable, `--version`, doctor, proxy health, extension patch)
-- Rolls back symlink to snapshot on any validation failure
+- Snapshots installed Claude Code VS Code extensions to `~/.claude/extension-snapshots/` before update
+- Validates new binary and extension (size, executable, `--version`, doctor, proxy health, patch status)
+- Rolls back CLI symlink/snapshot and extension snapshot on critical validation failure
 - Writes a breadcrumb at `~/.claude/logs/last-safe-update.json` for doctor to read
-- Optional `--probe --allow-model-call` runs one tiny OpenRouter call after install (off by default; explicit two-flag opt-in)
+- Optional `--probe --allow-model-call --probe-budget-usd <amount>` runs one OpenRouter call after install (off by default; explicit opt-in)
 
 `DISABLE_AUTOUPDATER=1` is set so Claude CLI does not silently update on its own.
 

@@ -41,7 +41,7 @@ That's it. Claude Code now runs on your chosen OpenRouter model with full tool a
 | Custom-model setups break Claude Code's tools/file editing | Preserves the full agentic protocol — no compromise mode |
 | Hidden reasoning tokens silently inflate cost | Strips reasoning fields by default, registry-gated pass-through for hard tasks |
 | No cache → 24 K-token floor on every turn | Auto-injects cache markers + provider pinning (proven 57% turn-2 cost drop on Kimi+Novita) |
-| Auto-updates can break your custom config | `claude-safe-update` with snapshot, validation, rollback |
+| Auto-updates can break your custom config | `claude-safe-update` with CLI + extension snapshots, validation, rollback |
 | Setup state spread across many files | Single registry + doctor + cleanup tool |
 
 ---
@@ -57,7 +57,7 @@ That's it. Claude Code now runs on your chosen OpenRouter model with full tool a
 <tr><td><b>Internal Haiku remap</b></td><td>Claude Code's silent background Haiku calls re-routed to your <code>cheapFull</code> model. Safety-gated (no tools, ≤2 messages).</td></tr>
 <tr><td><b>Reasoning policy</b></td><td>Reasoning passes through only for registry-allowlisted models on <code>/effort high</code>. Others stripped to prevent surprise cost.</td></tr>
 <tr><td><b>Doctor + cleanup</b></td><td>Health, drift detection, cache readiness, stale-data cleanup. Caveman/Desktop/projects protected.</td></tr>
-<tr><td><b>Safe updates</b></td><td><code>claude-safe-update</code> snapshots binary, runs install with timeout, validates, restores on failure.</td></tr>
+<tr><td><b>Safe updates</b></td><td><code>claude-safe-update</code> snapshots CLI + VS Code extension, runs official installers with timeout, patches, validates, restores on failure.</td></tr>
 <tr><td><b>LTS env injection</b></td><td>Wrappers boot-resilient. Survives reboots, fresh shells, OS updates.</td></tr>
 </table>
 
@@ -157,7 +157,7 @@ See [docs/UPDATE.md](docs/UPDATE.md).
 | Low-token Q&A (no tools) | `claude-low "explain debounce"` |
 | Cleanup stale data (dry-run first) | `claude-router cleanup all-safe` |
 | Cleanup apply | `claude-router cleanup all-safe --apply` |
-| Update Claude CLI safely | `claude-safe-update latest --dry-run` then `claude-safe-update latest` |
+| Update Claude Code safely | `claude-safe-update latest --dry-run` then `claude-safe-update latest` |
 | Run doctor | `node ~/.claude/openrouter-claude-proxy/doctor.mjs` |
 
 Full daily workflow in [docs/INSTALL.md](docs/INSTALL.md#daily-workflow).
@@ -242,7 +242,7 @@ On Kimi K2.6 + Novita pinning: turn 2 of any session drops from $0.020 → $0.00
 <details>
 <summary><b>What if a Claude Code update breaks something?</b></summary>
 
-`claude-safe-update` snapshots the current binary, runs the install with a timeout, validates the new version (size, executable, version check, doctor, proxy health, extension patch), and restores the snapshot if any check fails. You always have a known-good rollback.
+`claude-safe-update` snapshots the current CLI binary and Claude Code VS Code extension, runs the official update steps with a timeout, patches the extension, validates the full stack (size, executable, version check, doctor, proxy health, extension patch), and restores snapshots if any critical check fails. You always have a known-good rollback.
 
 </details>
 
