@@ -1,0 +1,2 @@
+#!/bin/sh
+exec __HOME__/.local/bin/claude-model kimi-k2.6 "$@"

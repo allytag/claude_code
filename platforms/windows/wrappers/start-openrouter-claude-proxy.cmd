@@ -1,0 +1,9 @@
+@echo off
+set CLAUDE_OPENROUTER_PROXY_PORT=4141
+set OPENROUTER_PROXY_DEBUG_TOKENS=1
+set OPENROUTER_PROXY_PROMPT_CACHE=auto
+set OPENROUTER_PROXY_PIN_PROVIDER=1
+set OPENROUTER_PROXY_REMAP_INTERNAL_HAIKU=1
+set DISABLE_TELEMETRY=1
+cd /d "__HOME__\.claude\openrouter-claude-proxy"
+"__NODE__" "__HOME__\.claude\openrouter-claude-proxy\server.mjs"

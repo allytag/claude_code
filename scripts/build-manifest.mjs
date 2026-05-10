@@ -5,7 +5,7 @@ import path from "node:path";
 import crypto from "node:crypto";
 
 const REPO = path.resolve(path.join(path.dirname(new URL(import.meta.url).pathname), ".."));
-const INCLUDE_DIRS = ["payload", "wrappers", "templates", "scripts", "docs"];
+const INCLUDE_DIRS = ["payload", "wrappers", "templates", "scripts", "docs", "platforms"];
 const INCLUDE_FILES = ["install.sh", "verify.sh", "uninstall.sh", "README.md", "LICENSE", ".gitignore"];
 
 async function sha256(file) {
@@ -40,7 +40,7 @@ for (const file of INCLUDE_FILES) {
 const manifest = {
   ltsVersion: "2026.05.07-1",
   generatedAt: new Date().toISOString(),
-  platform: "macos-arm64",
+  platform: "macos-arm64-lts-linux-windows-beta",
   nodeVersionMin: "20.0.0",
   claudeCliMin: "2.1.131",
   claudeCliMax: "2.1.999",

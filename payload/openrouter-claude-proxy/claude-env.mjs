@@ -3,7 +3,24 @@ import fs from "node:fs";
 import { spawn } from "node:child_process";
 
 const SETTINGS = "__HOME__/.claude/settings.json";
-const ORIGINAL_CLAUDE = process.env.CLAUDE_ORIGINAL_BIN || "__HOME__/.local/bin/claude";
+const HOME = "__HOME__";
+
+function resolveOriginalClaude() {
+  if (process.env.CLAUDE_ORIGINAL_BIN) return process.env.CLAUDE_ORIGINAL_BIN;
+  if (process.platform === "win32") {
+    for (const candidate of [
+      `${HOME}/.local/bin/claude.cmd`,
+      `${HOME}/.local/bin/claude.exe`,
+      `${HOME}/.local/bin/claude`,
+    ]) {
+      if (fs.existsSync(candidate)) return candidate;
+    }
+    return "claude.cmd";
+  }
+  return `${HOME}/.local/bin/claude`;
+}
+
+const ORIGINAL_CLAUDE = resolveOriginalClaude();
 
 function shouldForwardSettingEnv(key) {
   return (
@@ -53,6 +70,7 @@ try {
 
 const child = spawn(ORIGINAL_CLAUDE, process.argv.slice(2), {
   stdio: "inherit",
+  shell: process.platform === "win32" && /\.(cmd|bat)$/i.test(ORIGINAL_CLAUDE),
   env: {
     ...process.env,
     ...injected,

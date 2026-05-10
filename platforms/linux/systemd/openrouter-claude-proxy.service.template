@@ -1,0 +1,19 @@
+[Unit]
+Description=OpenRouter Claude Code local proxy
+After=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=__HOME__/.claude/openrouter-claude-proxy
+ExecStart=__NODE__ __HOME__/.claude/openrouter-claude-proxy/server.mjs
+Restart=always
+RestartSec=3
+Environment=CLAUDE_OPENROUTER_PROXY_PORT=4141
+Environment=OPENROUTER_PROXY_DEBUG_TOKENS=1
+Environment=OPENROUTER_PROXY_PROMPT_CACHE=auto
+Environment=OPENROUTER_PROXY_PIN_PROVIDER=1
+Environment=OPENROUTER_PROXY_REMAP_INTERNAL_HAIKU=1
+Environment=DISABLE_TELEMETRY=1
+
+[Install]
+WantedBy=default.target

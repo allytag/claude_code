@@ -1,35 +1,39 @@
 {
   "ltsVersion": "2026.05.07-1",
-  "generatedAt": "2026-05-10T05:19:28.437Z",
-  "platform": "macos-arm64",
+  "generatedAt": "2026-05-10T06:38:56.421Z",
+  "platform": "macos-arm64-lts-linux-windows-beta",
   "nodeVersionMin": "20.0.0",
   "claudeCliMin": "2.1.131",
   "claudeCliMax": "2.1.999",
   "vscodeExtensionMin": "2.1.131",
   "files": {
     ".gitignore": {
-      "size": 220,
-      "sha256": "85258dddc15b1d7ba261300be5290382ed508a9ddc563cfa989f4394340a009b"
+      "size": 241,
+      "sha256": "64b6baaf99415bc3124ef2f8e2902fea359c533dc83da7f464248394f8c4bc18"
     },
     "LICENSE": {
       "size": 1096,
       "sha256": "b45c4758c0028ce4272416d367fc83849d0fd7e0d2e9a37260fe7c71bd9baf26"
     },
     "README.md": {
-      "size": 11086,
-      "sha256": "97f4e36b715348d3bee6d7161db72d44103fd6f43d21745d071af4c2f4c3a1c3"
+      "size": 12145,
+      "sha256": "9d2a3f1210a6e77ec1665106b37fe7ec6896c2e97f71058d026e9c7881335bd4"
     },
     "docs/ARCHITECTURE.md": {
-      "size": 8487,
-      "sha256": "9039cbac79991883b2eabb456ce42969de25da2f501f812bf950c5fb706333c5"
+      "size": 8960,
+      "sha256": "b1a433131c51c2489077dde416d09ac347994260f958e63085e2edc54da7d947"
     },
     "docs/INSTALL.md": {
-      "size": 4850,
-      "sha256": "05c2ec3fcd1970320d69c0bdcaa10ab02afb80377ecba7314ee1cf33655ea312"
+      "size": 5029,
+      "sha256": "26f368b453f34aa1b4d174ec0d5e2dd900eeba61c089c88f6354c16eaf9aea89"
+    },
+    "docs/PLATFORMS.md": {
+      "size": 1915,
+      "sha256": "f96103d24ad613c2b06868e434f96b56f102e15f05cda878ea5a63951c600534"
     },
     "docs/SECURITY.md": {
-      "size": 5491,
-      "sha256": "06165bedc06ecad4a16146f58321e326986b027c86ced5924214880b6ba4474f"
+      "size": 5644,
+      "sha256": "65d6d417a01dd5ba6e41db9d13aaa25df070e0da21bbd4e6f64392dd8492c38d"
     },
     "docs/TROUBLESHOOTING.md": {
       "size": 5732,
@@ -48,8 +52,8 @@
       "sha256": "4b7f5a9d859c93d7f282f1812ed3ec93c1d8760d0e50bed2e48033d89d568b37"
     },
     "payload/openrouter-claude-proxy/claude-env.mjs": {
-      "size": 1850,
-      "sha256": "860f074cc2de30cee52cad803633af47ffd4200a6c99df5714d5f5e26d0a40be"
+      "size": 2350,
+      "sha256": "a5ea414d2b3020bc39e6907a4b4869b187f7b5ecb316b2009563f1eb766b3cbc"
     },
     "payload/openrouter-claude-proxy/claude-low.mjs": {
       "size": 4262,
@@ -83,13 +87,125 @@
       "size": 32594,
       "sha256": "2a8ffd39dbb7c6f2c8d278e45fc076d8b7f9fb308d90556a39f02808183110ce"
     },
+    "platforms/linux/README.md": {
+      "size": 1655,
+      "sha256": "f5e97a0b49070ed552663924f2e9566563ae5de2d2f097b74528135d187d7d58"
+    },
+    "platforms/linux/install.mjs": {
+      "size": 14504,
+      "sha256": "97b086b5f00b421ea8bdf3d86f0f0924760b23e8ef718819bf00c675f61ccffd"
+    },
+    "platforms/linux/systemd/openrouter-claude-proxy.service.template": {
+      "size": 562,
+      "sha256": "fef8c26bbddaba7260bc4b54906bcba1e919696fdd17da0ff60f87a1d37f0cf5"
+    },
+    "platforms/linux/uninstall.mjs": {
+      "size": 1241,
+      "sha256": "9b3a8d1e84f9bf643b2ccc4398fc126ee66975b6ba288b63813d3fb1b14ea555"
+    },
+    "platforms/linux/wrappers/claude-deepseek": {
+      "size": 69,
+      "sha256": "2c89bf7a9b793e8e25bf22c41402f22348b9f2e2e1b04155bf215619586531e4"
+    },
+    "platforms/linux/wrappers/claude-full": {
+      "size": 85,
+      "sha256": "5e84f01574fa859d2854e0502aa51735c042b5021c69bafb16a35499eee9c242"
+    },
+    "platforms/linux/wrappers/claude-kimi": {
+      "size": 63,
+      "sha256": "8b3b9a353008a88490344393bcbe534496566343bc020e15029396137b884548"
+    },
+    "platforms/linux/wrappers/claude-low": {
+      "size": 85,
+      "sha256": "4c1f71b3e856ff2952d2c5b9b4adeb09ada1e3b02680cdfdd09488069d037d3e"
+    },
+    "platforms/linux/wrappers/claude-model": {
+      "size": 94,
+      "sha256": "a93468e0d2dacdea96b26f07ed28f426efd4d329d561017534f9fbb726afa9a7"
+    },
+    "platforms/linux/wrappers/claude-qwen": {
+      "size": 66,
+      "sha256": "81627d3bf7aa4d87ad944d3172b5276f4c6ccadd57b658bb44f6c31a58bce0fc"
+    },
+    "platforms/linux/wrappers/claude-role": {
+      "size": 93,
+      "sha256": "0f073a399ce4546f2e504e7882958abec6907aa684aa7948a07edbdc4f2d4528"
+    },
+    "platforms/linux/wrappers/claude-router": {
+      "size": 83,
+      "sha256": "1d28287314d5717f323a35fbcb7e91181877269b124f030a4e04feda0499fcf1"
+    },
+    "platforms/linux/wrappers/claude-safe-update": {
+      "size": 86,
+      "sha256": "176a75f9e559679cf6a40291588a6d84a7c015000571265459f2b86723e798d2"
+    },
+    "platforms/linux/wrappers/or-model": {
+      "size": 83,
+      "sha256": "1d28287314d5717f323a35fbcb7e91181877269b124f030a4e04feda0499fcf1"
+    },
+    "platforms/windows/README.md": {
+      "size": 2405,
+      "sha256": "49b2a76f40c360efb2eeab78ca26aa561cb84894df441d92e0c9a9183b3ef22b"
+    },
+    "platforms/windows/install.mjs": {
+      "size": 15172,
+      "sha256": "82ff94865ee5685a72d6f3b16d4f47aa8603ebdfafa096a0f457ea992ee2ff18"
+    },
+    "platforms/windows/task-scheduler/openrouter-claude-proxy.xml.template": {
+      "size": 1251,
+      "sha256": "b9e95a27503a3b7c9492d67ecc0444a6363979cfe393953efb728172bf846814"
+    },
+    "platforms/windows/uninstall.mjs": {
+      "size": 1125,
+      "sha256": "32ad05fce1ee7e9e12775729e0be2aaccaa97662dbf9fbf26bf2eb43a143ccf8"
+    },
+    "platforms/windows/wrappers/claude-deepseek.cmd": {
+      "size": 68,
+      "sha256": "e4542440cb1e33a971856caab0604d0afe6c95179f1617414223beefeb178b96"
+    },
+    "platforms/windows/wrappers/claude-full.cmd": {
+      "size": 82,
+      "sha256": "e27e6d05c83d099b1187f381cb0cf52bec1039b0e3f01e1547084b217b89ad5c"
+    },
+    "platforms/windows/wrappers/claude-kimi.cmd": {
+      "size": 62,
+      "sha256": "5fb1fa4385dafc68473d5529f5b055ba69b0acf0c058028a9879a4a82aecec6e"
+    },
+    "platforms/windows/wrappers/claude-low.cmd": {
+      "size": 82,
+      "sha256": "5f0d1fb54e927c492992ebab29b96ca870df21cc7c8926f7a84f4f092ed99283"
+    },
+    "platforms/windows/wrappers/claude-model.cmd": {
+      "size": 91,
+      "sha256": "142630f68690d37de75b30cb6812838acb90763c4f8298a322fb71a14b7fdfdc"
+    },
+    "platforms/windows/wrappers/claude-qwen.cmd": {
+      "size": 65,
+      "sha256": "9fb918b03d2cce683b2046ff3c3582aee0bda51aee49b28885fd70c85b5df95b"
+    },
+    "platforms/windows/wrappers/claude-role.cmd": {
+      "size": 90,
+      "sha256": "17fb7dfab6157472607b0cdc432f1d69c3ba9e0c751390dd9946a60a40a12f39"
+    },
+    "platforms/windows/wrappers/claude-router.cmd": {
+      "size": 80,
+      "sha256": "afdfb78628d00fee6a89ffe448404eb66bf7bbfd10d259c0904d6e42d522c2df"
+    },
+    "platforms/windows/wrappers/or-model.cmd": {
+      "size": 80,
+      "sha256": "afdfb78628d00fee6a89ffe448404eb66bf7bbfd10d259c0904d6e42d522c2df"
+    },
+    "platforms/windows/wrappers/start-openrouter-claude-proxy.cmd": {
+      "size": 341,
+      "sha256": "d9aeaa7f98b499280d559fa3e21049a96c4ae084ab0d2f49ecd0e4c76d2db637"
+    },
     "scripts/build-manifest.mjs": {
-      "size": 1927,
-      "sha256": "1dc3802cc6e5d4a53138a28ec650555bf4f3c12b547e1d6e8267d40bac759ac6"
+      "size": 1963,
+      "sha256": "afac8553537eaf8667d091ee854c4efb4080c3a51fe5dcd078ae95f30609ee4d"
     },
     "scripts/doctor-local.mjs": {
-      "size": 1958,
-      "sha256": "40b5591d944de864bd08581a35821424010e33bbd75fd6fac66db8b68d92201d"
+      "size": 3721,
+      "sha256": "0c4025cd8eb0f299817061c5ecc94798283da76b55cbdd53ee921f66d7a04d16"
     },
     "scripts/install.mjs": {
       "size": 22147,

@@ -167,6 +167,23 @@ __NODE__   → result of `which node` on target Mac
 
 This makes the same repo install correctly on any Mac regardless of username — every path is rendered to the target user's `$HOME` at install time.
 
+## Platform Isolation
+
+macOS Apple Silicon remains the LTS path:
+
+```text
+install.sh -> scripts/install.mjs -> LaunchAgent
+```
+
+Linux and Windows are isolated platform paths:
+
+```text
+platforms/linux/install.mjs   -> systemd --user
+platforms/windows/install.mjs -> .cmd wrappers + optional Task Scheduler
+```
+
+They reuse the same proxy payload, registry, doctor, patcher, and wrappers concept, but do not change the macOS installer flow. See [PLATFORMS.md](PLATFORMS.md).
+
 ## Locked Boundaries
 
 The installer **detects but does not modify**:

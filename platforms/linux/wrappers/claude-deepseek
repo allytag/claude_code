@@ -1,0 +1,2 @@
+#!/bin/sh
+exec __HOME__/.local/bin/claude-model deepseek-v4-pro "$@"

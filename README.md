@@ -2,7 +2,8 @@
 
 Run the **official Claude Code CLI** and **VS Code extension** through any **OpenRouter** model, without losing tools, file editing, bash, MCP, or repo workflow.
 
-[![Platform](https://img.shields.io/badge/platform-macOS%20Apple%20Silicon-black)](#requirements)
+[![Platform](https://img.shields.io/badge/platform-macOS%20Apple%20Silicon%20LTS-black)](#platform-status)
+[![Beta](https://img.shields.io/badge/linux%2Fwindows-beta-orange)](#platform-status)
 [![Node](https://img.shields.io/badge/node-%E2%89%A5%2020-green)](#requirements)
 [![No secrets](https://img.shields.io/badge/secrets-no--in--repo-blue)](docs/SECURITY.md)
 [![Status](https://img.shields.io/badge/status-LTS--locked-success)](#whats-included)
@@ -16,7 +17,7 @@ Run the **official Claude Code CLI** and **VS Code extension** through any **Ope
 curl -fsSL https://claude.ai/install.sh | bash
 
 # 2. Clone this repo
-git clone <your-repo-url> Claude && cd Claude
+git clone https://github.com/allytag/Claude_Code.git Claude && cd Claude
 
 # 3. Preview what will happen (no writes)
 ./install.sh --dry-run
@@ -40,7 +41,7 @@ That's it. Claude Code now runs on your chosen OpenRouter model with full tool a
 | Claude Code is locked to Anthropic's billing | Routes through OpenRouter to any compatible model |
 | Custom-model setups break Claude Code's tools/file editing | Preserves the full agentic protocol — no compromise mode |
 | Hidden reasoning tokens silently inflate cost | Strips reasoning fields by default, registry-gated pass-through for hard tasks |
-| No cache → 24 K-token floor on every turn | Auto-injects cache markers + provider pinning (proven 57% turn-2 cost drop on Kimi+Novita) |
+| No cache → 24 K-token floor on every turn | Auto-injects cache markers + provider pinning (observed 57% turn-2 cost drop on Kimi+Novita) |
 | Auto-updates can break your custom config | `claude-safe-update` with CLI + extension snapshots, validation, rollback |
 | Setup state spread across many files | Single registry + doctor + cleanup tool |
 
@@ -50,7 +51,7 @@ That's it. Claude Code now runs on your chosen OpenRouter model with full tool a
 
 <table>
 <tr><th>Feature</th><th>What it does</th></tr>
-<tr><td><b>Original Claude Code</b></td><td>CLI + VS Code extension untouched. All tools, file edits, bash, repo, MCP work.</td></tr>
+<tr><td><b>Original Claude Code</b></td><td>Official CLI preserved; VS Code extension patched reversibly for OpenRouter compatibility. All tools, file edits, bash, repo, MCP work.</td></tr>
 <tr><td><b>Local proxy</b></td><td>Anthropic-compatible endpoint at <code>127.0.0.1:4141</code>, forwards to OpenRouter. Strips thinking fields, sanitizes responses.</td></tr>
 <tr><td><b>Model registry</b></td><td>Roles (main / cheapFull / hard / subagent / lowToken / backup / compare) → OpenRouter model IDs. Swap any time.</td></tr>
 <tr><td><b>Smart caching</b></td><td>Auto-inject Anthropic cache_control markers. Provider pinning via registry to keep cache continuity.</td></tr>
@@ -79,8 +80,10 @@ That's it. Claude Code now runs on your chosen OpenRouter model with full tool a
 
 ## Requirements
 
+See [Platform Status](#platform-status) before installing.
+
 **Required**
-- macOS Apple Silicon (M-series)
+- macOS Apple Silicon (M-series) for LTS installer
 - Node.js ≥ 20
 - Zsh
 - Official Claude Code CLI ([install](https://code.claude.com/docs/en/setup))
@@ -91,6 +94,16 @@ That's it. Claude Code now runs on your chosen OpenRouter model with full tool a
 
 If VS Code is missing the installer skips that step and continues CLI-only.
 
+## Platform Status
+
+| Platform | Status | Installer | Notes |
+|---|---|---|---|
+| macOS Apple Silicon | **LTS** | `./install.sh` | Primary supported path. Uses LaunchAgent and macOS VS Code paths. |
+| Linux | **Beta** | `node platforms/linux/install.mjs` | Isolated support path using `systemd --user`. |
+| Windows | **Beta** | `node platforms/windows/install.mjs` | Isolated support path using `.cmd` wrappers and optional Task Scheduler. |
+
+The macOS installer flow is not shared with beta platform installers. Linux/Windows support can grow without changing the locked macOS LTS path.
+
 ---
 
 ## Install
@@ -99,7 +112,7 @@ If VS Code is missing the installer skips that step and continues CLI-only.
 <summary><b>Quick install (default, recommended)</b></summary>
 
 ```sh
-git clone <your-repo-url> Claude && cd Claude
+git clone https://github.com/allytag/Claude_Code.git Claude && cd Claude
 ./install.sh --dry-run     # always preview first
 ./install.sh --merge       # prompts for OpenRouter key, hidden input
 ```
@@ -167,7 +180,7 @@ Full daily workflow in [docs/INSTALL.md](docs/INSTALL.md#daily-workflow).
 ## Default Model Roles
 
 ```text
-main      → moonshotai/kimi-k2.6        (proven cache; Novita pin)
+main      → moonshotai/kimi-k2.6        (observed cache; Novita pin)
 cheapFull → qwen/qwen3.6-plus           (cheap, large context)
 hard      → deepseek/deepseek-v4-pro    (manual; reasoning passes through)
 subagent  → qwen/qwen3.6-plus
@@ -221,7 +234,7 @@ No. Full Claude Code mode is preserved — same tool contract, same protocol, sa
 <details>
 <summary><b>Does my OpenRouter key end up in the repo?</b></summary>
 
-No. The installer prompts for it (hidden input) and writes it only to `~/.claude/settings.json` on the target Mac. The repo's redaction check refuses any commit containing `sk-or-` or a real auth token.
+No. The installer prompts for it (hidden input) and writes it only to `~/.claude/settings.json` on the target machine. The repo's redaction check refuses any commit containing `sk-or-` or a real auth token.
 
 </details>
 
@@ -256,7 +269,17 @@ Yes. `claude-router add <alias> <provider/model-id> --name "Display Name"`, then
 <details>
 <summary><b>Linux or Windows support?</b></summary>
 
-Not yet. macOS Apple Silicon only. Path layouts and `launchctl` are macOS-specific. Contributions welcome.
+Linux and Windows support exists in isolated beta folders:
+
+```sh
+node platforms/linux/install.mjs --dry-run --merge
+```
+
+```powershell
+node platforms/windows/install.mjs --dry-run --merge
+```
+
+These installers are isolated from the macOS LTS flow and include dry-run preflight checks.
 
 </details>
 

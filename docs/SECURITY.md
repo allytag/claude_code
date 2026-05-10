@@ -16,6 +16,7 @@ What this installer protects, what it does not, and how to verify.
 | Repo-cloned to a Mac where Claude Code isn't installed | Installer refuses with explicit install instructions |
 | User runs install on dirty target | `--fresh` mode refuses; `--merge` preserves unrelated keys |
 | Future commit accidentally adds backup/log file | `.gitignore` covers `*-backup*`, `*.jsonl`, `last-metrics.json`, `*.log`, etc. |
+| Linux/Windows beta work changes macOS LTS flow | Platform installers live under `platforms/` and are validated separately from `scripts/install.mjs` |
 
 ## Repo Safety Rules
 

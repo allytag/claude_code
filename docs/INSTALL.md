@@ -2,6 +2,8 @@
 
 Step-by-step installation, verification, and daily workflow.
 
+This guide covers the **macOS Apple Silicon LTS installer**. Linux and Windows installers are isolated and documented in [PLATFORMS.md](PLATFORMS.md).
+
 ## Prerequisites
 
 | | Check | Install if missing |
@@ -33,7 +35,7 @@ npm install -g @anthropic-ai/claude-code
 ### 2. Clone this repo
 
 ```sh
-git clone <your-repo-url> Claude
+git clone https://github.com/allytag/Claude_Code.git Claude
 cd Claude
 ```
 
