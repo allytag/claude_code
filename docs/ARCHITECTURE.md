@@ -39,8 +39,12 @@ sequenceDiagram
 | **Patcher** | `~/.claude/openrouter-claude-proxy/patch-extension.mjs` | Hides `redacted_thinking` UI errors, forces extension thinking off, hides extension update command. Re-applies on extension updates. |
 | **Doctor** | `~/.claude/openrouter-claude-proxy/doctor.mjs` | Read-only diagnosis. Drift, cache readiness, last metrics. |
 | **LaunchAgent** | `~/Library/LaunchAgents/com.codex.openrouter-claude-proxy.plist` | Keeps proxy running, re-patches extension every 60 s. |
-| **Skills** | `~/.claude/skills/` | Focused workflows loaded only when relevant: frontend design, shipping, debug, review, SaaS architecture. |
-| **Subagents** | `~/.claude/agents/` | Specialized read-only or validation agents for UI design, frontend review, tests, architecture, and research. |
+| **Skills** | `~/.claude/skills/` | Focused workflows loaded only when relevant: context intelligence, premium UI, API contracts, testing, security, performance, tool coaching, skill evolution, shipping, debug, review, SaaS architecture. |
+| **Subagents** | `~/.claude/agents/` | Specialized agents for context scouting, UI design/implementation, frontend review, tests, architecture, security, performance, release checks, and research. |
+| **Slash commands** | `~/.claude/commands/` | Explicit reusable workflows: `/smart-plan`, `/context-scout`, `/ui-polish`, `/ship-feature`, `/debug-loop`, `/release-check`, `/security-audit`, `/skill-forge`, `/tool-coach`. |
+| **Skill guard** | `~/.claude/openrouter-claude-proxy/skill-guard.mjs` | Validates skill drafts for size, required frontmatter, allowed tools, secrets, private paths, dangerous commands, and unsafe trigger text. Promotion is dry-run unless `--apply`. |
+| **Agent policy** | `~/.claude/agent-policy.json` | Maps each agent to expected Claude Code slot/registry role. Claude Code supports per-agent `model` frontmatter; this LTS leaves `CLAUDE_CODE_SUBAGENT_MODEL` unset so frontmatter routing actually applies. Doctor reports drift or global override shadowing. |
+| **Statusline** | `~/.claude/statusline-openrouter-lts.mjs` | Local-only one-line role/model/provider/cost/token/cache/finish/retry/context display. No model calls. |
 
 ## Proxy Pipeline
 
@@ -203,6 +207,12 @@ The installer writes only to:
 
 ```text
 ~/.claude/openrouter-claude-proxy/         (proxy code, registry)
+~/.claude/skills/                          (workflow skills)
+~/.claude/agents/                          (specialist agents)
+~/.claude/commands/                        (user slash commands)
+~/.claude/skill-inbox/                     (guarded skill drafts)
+~/.claude/agent-policy.json                (agent model policy)
+~/.claude/statusline-openrouter-lts.mjs    (local statusline)
 ~/.claude/settings.json                    (env block, merge mode)
 ~/.claude/installer-backups/               (backups before any write)
 ~/.local/bin/claude-*                      (wrappers)

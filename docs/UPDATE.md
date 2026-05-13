@@ -14,7 +14,8 @@ The `--upgrade` flow:
 - Backs up everything to `~/.claude/installer-backups/openrouter-lts-<stamp>/`
 - Preserves your token in `~/.claude/settings.json`
 - Preserves your model role choices in the registry (unless `--reset-registry`)
-- Refreshes proxy code, wrappers, doctor, scripts
+- Refreshes proxy code, wrappers, doctor, scripts, Skills, subagents, slash commands, statusline, and guarded skill tooling
+- Preserves local model registry and agent policy on merge/upgrade
 
 After update:
 

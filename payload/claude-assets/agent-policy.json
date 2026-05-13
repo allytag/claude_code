@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-05-13",
+  "subagentModelMode": "frontmatter",
+  "notes": [
+    "Agent model values are Claude Code slots, not raw OpenRouter IDs.",
+    "Slots route through registry: haiku=cheapFull, sonnet=main, opus=hard.",
+    "Policy keeps cheap/read-only agents inexpensive and reserves hard model for architecture.",
+    "Claude Code resolves subagent models from CLAUDE_CODE_SUBAGENT_MODEL first, then invocation, then frontmatter. This LTS uses frontmatter mode, so the global override is intentionally unset.",
+    "This policy verifies installed agents match intended slots and never changes models silently."
+  ],
+  "agents": {
+    "context-scout": {
+      "model": "haiku",
+      "role": "cheapFull",
+      "reason": "Read-only context scouting should be cheap and frequent."
+    },
+    "test-runner": {
+      "model": "haiku",
+      "role": "cheapFull",
+      "reason": "Validation command selection is mostly procedural."
+    },
+    "researcher": {
+      "model": "haiku",
+      "role": "cheapFull",
+      "reason": "Research summaries should stay cheap unless escalated manually."
+    },
+    "ui-designer": {
+      "model": "sonnet",
+      "role": "main",
+      "reason": "Visual direction needs main model quality."
+    },
+    "frontend-implementer": {
+      "model": "sonnet",
+      "role": "main",
+      "reason": "Implementation should use main coding model."
+    },
+    "frontend-reviewer": {
+      "model": "sonnet",
+      "role": "main",
+      "reason": "Frontend review needs design and code judgment."
+    },
+    "performance-reviewer": {
+      "model": "sonnet",
+      "role": "main",
+      "reason": "Performance review needs project judgment."
+    },
+    "security-reviewer": {
+      "model": "sonnet",
+      "role": "main",
+      "reason": "Default security review stays high-quality without forcing hard model every time."
+    },
+    "release-checker": {
+      "model": "sonnet",
+      "role": "main",
+      "reason": "Release review needs balanced judgment."
+    },
+    "architect": {
+      "model": "opus",
+      "role": "hard",
+      "reason": "Architecture is explicit hard-reasoning work."
+    }
+  }
+}

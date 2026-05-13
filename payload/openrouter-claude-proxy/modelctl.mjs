@@ -6,6 +6,7 @@ import { spawn } from "node:child_process";
 const ROOT = "__HOME__/.claude/openrouter-claude-proxy";
 const REGISTRY = `${ROOT}/model-registry.json`;
 const SETTINGS = "__HOME__/.claude/settings.json";
+const AGENT_POLICY = "__HOME__/.claude/agent-policy.json";
 const CLAUDE_ENV = `${ROOT}/claude-env.mjs`;
 const CLAUDE_LOW = `${ROOT}/claude-low.mjs`;
 const NODE = "__NODE__";
@@ -64,7 +65,7 @@ function helpRoles(cmd) {
   main       Default coding model. Claude slot: sonnet.
   cheapFull  Cheap full Claude Code/background model. Claude slot: haiku.
   hard       Hard reasoning/debugging model. Claude slot: opus.
-  subagent   Claude Code subagent model. Settings field: CLAUDE_CODE_SUBAGENT_MODEL.
+  subagent   Manual subagent role for claude-role. Frontmatter agent policy is preferred for installed agents.
   lowToken   Explicit claude-low model. No Claude Code tools.
   backup     Manual fallback reserve. Not automatic fallback.
   compare    Custom/alternate test model. Claude custom slot.
@@ -166,6 +167,18 @@ async function loadRegistry() {
   return readJson(REGISTRY);
 }
 
+async function loadAgentPolicy() {
+  try {
+    return await readJson(AGENT_POLICY);
+  } catch {
+    return null;
+  }
+}
+
+function usesFrontmatterAgentPolicy(policy) {
+  return policy?.subagentModelMode === "frontmatter";
+}
+
 function roleAlias(registry, role) {
   const alias = registry.roles?.[role];
   if (!alias) throw new Error(`Unknown or unassigned role: ${role}`);
@@ -250,6 +263,8 @@ async function cmdList() {
 
 async function cmdStatus() {
   const registry = await loadRegistry();
+  const settings = await readJson(SETTINGS).catch(() => ({}));
+  const agentPolicy = await loadAgentPolicy();
   console.log(`Registry: ${REGISTRY}`);
   console.log(`Updated: ${registry.updatedAt || "unknown"}`);
   console.log("Roles:");
@@ -261,6 +276,14 @@ async function cmdStatus() {
   console.log("Claude slots:");
   for (const [slot, role] of Object.entries(registry.claudeSlots || {})) {
     console.log(`  ${slot}: ${role}`);
+  }
+  console.log("Agent policy:");
+  if (usesFrontmatterAgentPolicy(agentPolicy)) {
+    console.log("  mode: frontmatter (CLAUDE_CODE_SUBAGENT_MODEL should be unset)");
+    console.log(`  global override: ${settings.env?.CLAUDE_CODE_SUBAGENT_MODEL ? "set-warning" : "unset-ok"}`);
+  } else {
+    console.log("  mode: global subagent role");
+    console.log(`  global override: ${settings.env?.CLAUDE_CODE_SUBAGENT_MODEL || "unset"}`);
   }
   if (registry.remaps?.internalHaiku) {
     const cfg = registry.remaps.internalHaiku;
@@ -516,6 +539,7 @@ function envFieldForSlot(slot) {
 
 async function buildSettingsFromRegistry(registry) {
   const settings = await readJson(SETTINGS);
+  const agentPolicy = await loadAgentPolicy();
   settings.env ||= {};
   const slotMap = registry.claudeSlots || {};
   for (const slot of ["sonnet", "haiku", "opus", "custom"]) {
@@ -529,8 +553,12 @@ async function buildSettingsFromRegistry(registry) {
     settings.env[descField] = model.description || `${role} role`;
   }
 
-  const subagentAlias = roleAlias(registry, slotMap.subagent || "subagent");
-  settings.env.CLAUDE_CODE_SUBAGENT_MODEL = registry.models[subagentAlias]?.id || subagentAlias;
+  if (usesFrontmatterAgentPolicy(agentPolicy)) {
+    delete settings.env.CLAUDE_CODE_SUBAGENT_MODEL;
+  } else {
+    const subagentAlias = roleAlias(registry, slotMap.subagent || "subagent");
+    settings.env.CLAUDE_CODE_SUBAGENT_MODEL = registry.models[subagentAlias]?.id || subagentAlias;
+  }
   settings.model = slotMap.defaultSlot || "sonnet";
   return settings;
 }

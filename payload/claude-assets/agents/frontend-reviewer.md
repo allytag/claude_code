@@ -3,7 +3,7 @@ name: frontend-reviewer
 description: Read-only frontend quality reviewer. Use after UI implementation to inspect code for responsive behavior, accessibility, visual consistency, design-system fit, and likely browser issues.
 tools: Read, Grep, Glob, Bash
 model: sonnet
-skills: frontend-design, code-review
+skills: premium-ui,frontend-design,code-review,tool-coach
 color: cyan
 ---
 

@@ -14,6 +14,13 @@ const METRICS_LOG = "__HOME__/.claude/logs/openrouter-claude-proxy-metrics.jsonl
 const MODEL_REGISTRY = "__HOME__/.claude/openrouter-claude-proxy/model-registry.json";
 const CLAUDE_ENV = "__HOME__/.claude/openrouter-claude-proxy/claude-env.mjs";
 const LAST_SAFE_UPDATE = "__HOME__/.claude/logs/last-safe-update.json";
+const SKILLS_DIR = "__HOME__/.claude/skills";
+const AGENTS_DIR = "__HOME__/.claude/agents";
+const COMMANDS_DIR = "__HOME__/.claude/commands";
+const STATUSLINE = "__HOME__/.claude/statusline-openrouter-lts.mjs";
+const SKILL_INBOX = "__HOME__/.claude/skill-inbox";
+const AGENT_POLICY = "__HOME__/.claude/agent-policy.json";
+const SKILL_GUARD = "__HOME__/.claude/openrouter-claude-proxy/skill-guard.mjs";
 const WRAPPERS = [
   "__HOME__/.local/bin/claude-router",
   "__HOME__/.local/bin/or-model",
@@ -94,6 +101,117 @@ async function wrapperStatus() {
     }
   }
   return result;
+}
+
+async function listInstalledAssets(settings = null) {
+  async function listNames(dir, suffix = "") {
+    try {
+      const entries = await fs.readdir(dir, { withFileTypes: true });
+      return entries
+        .filter((entry) => entry.isDirectory() || !suffix || entry.name.endsWith(suffix))
+        .map((entry) => entry.name)
+        .sort();
+    } catch {
+      return [];
+    }
+  }
+  const skills = await listNames(SKILLS_DIR);
+  const agents = await listNames(AGENTS_DIR, ".md");
+  const commands = await listNames(COMMANDS_DIR, ".md");
+  const inboxEntries = await listNames(SKILL_INBOX);
+  const agentPolicy = await maybeReadJson(AGENT_POLICY);
+  const agentPolicyDrift = await summarizeAgentPolicy(agentPolicy, settings);
+  let statusline = "missing";
+  try {
+    await fs.access(STATUSLINE, fs.constants.X_OK);
+    statusline = "executable";
+  } catch {
+    try {
+      await fs.access(STATUSLINE);
+      statusline = "present-not-executable";
+    } catch {
+      statusline = "missing";
+    }
+  }
+  return {
+    skills: { count: skills.length, names: skills },
+    agents: { count: agents.length, names: agents },
+    commands: { count: commands.length, names: commands },
+    skillInbox: { count: inboxEntries.length, path: SKILL_INBOX, entries: inboxEntries },
+    skillGuard: { path: SKILL_GUARD, status: await executableStatus(SKILL_GUARD) },
+    agentPolicy: agentPolicyDrift,
+    statusline,
+  };
+}
+
+async function executableStatus(file) {
+  try {
+    await fs.access(file, fs.constants.X_OK);
+    return "executable";
+  } catch {
+    try {
+      await fs.access(file);
+      return "present-not-executable";
+    } catch {
+      return "missing";
+    }
+  }
+}
+
+function parseFrontmatter(text) {
+  if (!text.startsWith("---\n")) return {};
+  const end = text.indexOf("\n---", 4);
+  if (end === -1) return {};
+  const raw = text.slice(4, end).trim();
+  const data = {};
+  for (const line of raw.split("\n")) {
+    const match = line.match(/^([A-Za-z0-9_-]+):\s*(.*)$/);
+    if (match) data[match[1]] = match[2].trim().replace(/^["']|["']$/g, "");
+  }
+  return data;
+}
+
+async function summarizeAgentPolicy(policy, settings = null) {
+  const entries = Object.entries(policy?.agents || {});
+  const agentFiles = await fs.readdir(AGENTS_DIR).catch(() => []);
+  const actual = {};
+  for (const file of agentFiles.filter((name) => name.endsWith(".md"))) {
+    const text = await fs.readFile(path.join(AGENTS_DIR, file), "utf8").catch(() => "");
+    const fm = parseFrontmatter(text);
+    if (fm.name) actual[fm.name] = { file, model: fm.model || null };
+  }
+  const drift = [];
+  for (const [name, expected] of entries) {
+    if (!actual[name]) {
+      drift.push({ agent: name, issue: "missing-agent", expectedModel: expected.model });
+    } else if (expected.model && actual[name].model !== expected.model) {
+      drift.push({ agent: name, issue: "model-mismatch", expectedModel: expected.model, actualModel: actual[name].model });
+    }
+  }
+  for (const [name, info] of Object.entries(actual)) {
+    if (!policy?.agents?.[name]) drift.push({ agent: name, issue: "missing-policy", actualModel: info.model });
+  }
+  const mode = policy?.subagentModelMode || null;
+  const globalOverride = settings?.env?.CLAUDE_CODE_SUBAGENT_MODEL || null;
+  const shadowed = Boolean(mode === "frontmatter" && globalOverride);
+  if (shadowed) {
+    drift.push({
+      agent: "*",
+      issue: "global-subagent-override-shadows-frontmatter",
+      action: "unset CLAUDE_CODE_SUBAGENT_MODEL to allow per-agent model frontmatter",
+    });
+  }
+  return {
+    path: AGENT_POLICY,
+    present: Boolean(policy),
+    mode,
+    globalSubagentOverride: globalOverride ? "set" : "unset",
+    shadowedByGlobalOverride: shadowed,
+    effectiveRouting: shadowed ? "global-override" : (mode === "frontmatter" ? "frontmatter" : "default"),
+    entryCount: entries.length,
+    drift: drift.length > 0 || shadowed,
+    driftItems: drift,
+  };
 }
 
 function launchAgentEnv(plist) {
@@ -505,7 +623,9 @@ async function main() {
       alwaysThinkingEnabled: settings.alwaysThinkingEnabled,
       effortLevel: settings.effortLevel,
       cavemanClaudeCodeEnabled: settings.enabledPlugins?.["caveman@caveman"] === true,
+      statusLine: settings.statusLine?.command || null,
     },
+    claudeAssets: await listInstalledAssets(settings),
     modelRegistry: summarizeRegistry(registry),
     proxyFeatures: {
       debugTokens: envValue(env, "OPENROUTER_PROXY_DEBUG_TOKENS", "0"),

@@ -19,6 +19,10 @@ const TEMPLATES = path.join(REPO, "templates");
 const TARGET_PROXY = path.join(HOME, ".claude", "openrouter-claude-proxy");
 const TARGET_SKILLS = path.join(HOME, ".claude", "skills");
 const TARGET_AGENTS = path.join(HOME, ".claude", "agents");
+const TARGET_COMMANDS = path.join(HOME, ".claude", "commands");
+const TARGET_STATUSLINE = path.join(HOME, ".claude", "statusline-openrouter-lts.mjs");
+const TARGET_SKILL_INBOX = path.join(HOME, ".claude", "skill-inbox");
+const TARGET_AGENT_POLICY = path.join(HOME, ".claude", "agent-policy.json");
 const TARGET_SETTINGS = path.join(HOME, ".claude", "settings.json");
 const TARGET_LOCAL_BIN = path.join(HOME, ".local", "bin");
 const TARGET_LAUNCH_AGENT = path.join(HOME, "Library", "LaunchAgents", "com.codex.openrouter-claude-proxy.plist");
@@ -34,7 +38,7 @@ const REQUIRED_PROXY_FILES = [
   "claude-low.mjs",
   "claude-env.mjs",
   "safe-update.mjs",
-  "model-registry.json",
+  "skill-guard.mjs",
   "package.json",
   "README.md",
 ];
@@ -58,6 +62,14 @@ const SKILL_DIRS = [
   "debug-loop",
   "code-review",
   "saas-architecture",
+  "context-intelligence",
+  "premium-ui",
+  "api-contract",
+  "test-strategy",
+  "security-hardening",
+  "performance-pass",
+  "tool-coach",
+  "skill-evolution",
 ];
 
 const AGENT_FILES = [
@@ -66,6 +78,23 @@ const AGENT_FILES = [
   "test-runner.md",
   "architect.md",
   "researcher.md",
+  "context-scout.md",
+  "frontend-implementer.md",
+  "security-reviewer.md",
+  "performance-reviewer.md",
+  "release-checker.md",
+];
+
+const COMMAND_FILES = [
+  "smart-plan.md",
+  "context-scout.md",
+  "ui-polish.md",
+  "ship-feature.md",
+  "debug-loop.md",
+  "release-check.md",
+  "security-audit.md",
+  "skill-forge.md",
+  "tool-coach.md",
 ];
 
 function usage() {
@@ -322,7 +351,7 @@ async function copyFileWithBackup(src, dest, backupDir, nodePath, mode, plan) {
   plan.push({ action: "write", from: src, to: dest, mode });
 }
 
-function settingsTemplate(apiKey) {
+function settingsTemplate(apiKey, nodePath = process.execPath) {
   return {
     env: {
       ANTHROPIC_BASE_URL: "http://127.0.0.1:4141",
@@ -338,8 +367,7 @@ function settingsTemplate(apiKey) {
       ANTHROPIC_DEFAULT_SONNET_MODEL_DESCRIPTION: "Main model for coding, feature implementation, refactors, and production-grade project building.",
       ANTHROPIC_DEFAULT_HAIKU_MODEL: "qwen/qwen3.6-plus",
       ANTHROPIC_DEFAULT_HAIKU_MODEL_NAME: "Qwen 3.6 Plus",
-      ANTHROPIC_DEFAULT_HAIKU_MODEL_DESCRIPTION: "Cheap full-mode, subagent, and low-token candidate.",
-      CLAUDE_CODE_SUBAGENT_MODEL: "qwen/qwen3.6-plus",
+      ANTHROPIC_DEFAULT_HAIKU_MODEL_DESCRIPTION: "Cheap full-mode, background, and low-token candidate.",
       ANTHROPIC_CUSTOM_MODEL_OPTION: "z-ai/glm-5.1",
       ANTHROPIC_CUSTOM_MODEL_OPTION_NAME: "GLM 5.1",
       ANTHROPIC_CUSTOM_MODEL_OPTION_DESCRIPTION: "Comparison model.",
@@ -350,18 +378,39 @@ function settingsTemplate(apiKey) {
     enabledPlugins: {
       "caveman@caveman": false,
     },
+    statusLine: {
+      type: "command",
+      command: `${nodePath} ${TARGET_STATUSLINE}`,
+      padding: 0,
+    },
   };
 }
 
-function mergeSettings(existing, apiKey) {
+function usesFrontmatterAgentPolicy(policy) {
+  return policy?.subagentModelMode === "frontmatter";
+}
+
+function mergeSettings(existing, apiKey, nodePath = process.execPath, agentPolicy = null) {
   const next = structuredClone(existing || {});
-  const template = settingsTemplate(apiKey || existing?.env?.ANTHROPIC_AUTH_TOKEN || "");
-  next.env = { ...(existing?.env || {}), ...template.env };
+  const template = settingsTemplate(apiKey || existing?.env?.ANTHROPIC_AUTH_TOKEN || "", nodePath);
+  const existingEnv = existing?.env || {};
+  next.env = { ...existingEnv };
+  for (const [key, value] of Object.entries(template.env)) {
+    if (key.startsWith("ANTHROPIC_DEFAULT_") || key === "ANTHROPIC_CUSTOM_MODEL_OPTION") {
+      if (next.env[key] == null || next.env[key] === "") next.env[key] = value;
+    } else if (key.endsWith("_MODEL_NAME") || key.endsWith("_MODEL_DESCRIPTION")) {
+      if (next.env[key] == null || next.env[key] === "") next.env[key] = value;
+    } else {
+      next.env[key] = value;
+    }
+  }
   next.env.ANTHROPIC_AUTH_TOKEN = apiKey || existing?.env?.ANTHROPIC_AUTH_TOKEN || "";
+  if (usesFrontmatterAgentPolicy(agentPolicy)) delete next.env.CLAUDE_CODE_SUBAGENT_MODEL;
   next.enabledPlugins = { ...(existing?.enabledPlugins || {}), ...template.enabledPlugins };
-  next.model = template.model;
+  next.model = existing?.model || template.model;
   next.alwaysThinkingEnabled = false;
   next.effortLevel = existing?.effortLevel || template.effortLevel;
+  next.statusLine = template.statusLine;
   return next;
 }
 
@@ -417,6 +466,13 @@ async function buildPlan(opts, report) {
   for (const name of REQUIRED_PROXY_FILES) {
     await copyFileWithBackup(path.join(PAYLOAD, name), path.join(TARGET_PROXY, name), backupDir, nodePath, name.endsWith(".mjs") ? 0o755 : 0o644, plan);
   }
+  const targetRegistry = path.join(TARGET_PROXY, "model-registry.json");
+  if (opts.mode === "fresh" || !(await exists(targetRegistry))) {
+    await copyFileWithBackup(path.join(PAYLOAD, "model-registry.json"), targetRegistry, backupDir, nodePath, 0o644, plan);
+  } else {
+    await backupFile(targetRegistry, backupDir, plan);
+    plan.push({ action: "preserve-json", to: targetRegistry, reason: "preserve local model roles, observed providers, cache data, and custom models" });
+  }
   for (const name of WRAPPER_FILES) {
     await copyFileWithBackup(path.join(WRAPPERS, name), path.join(TARGET_LOCAL_BIN, name), backupDir, nodePath, 0o755, plan);
   }
@@ -440,6 +496,31 @@ async function buildPlan(opts, report) {
       plan,
     );
   }
+  for (const name of COMMAND_FILES) {
+    await copyFileWithBackup(
+      path.join(CLAUDE_ASSETS, "commands", name),
+      path.join(TARGET_COMMANDS, name),
+      backupDir,
+      nodePath,
+      0o644,
+      plan,
+    );
+  }
+  await copyFileWithBackup(
+    path.join(CLAUDE_ASSETS, "statusline", "openrouter-lts-statusline.mjs"),
+    TARGET_STATUSLINE,
+    backupDir,
+    nodePath,
+    0o755,
+    plan,
+  );
+  if (opts.mode === "fresh" || !(await exists(TARGET_AGENT_POLICY))) {
+    await copyFileWithBackup(path.join(CLAUDE_ASSETS, "agent-policy.json"), TARGET_AGENT_POLICY, backupDir, nodePath, 0o644, plan);
+  } else {
+    await backupFile(TARGET_AGENT_POLICY, backupDir, plan);
+    plan.push({ action: "preserve-json", to: TARGET_AGENT_POLICY, reason: "preserve local agent model policy customizations" });
+  }
+  plan.push({ action: "ensure-dir", to: TARGET_SKILL_INBOX });
   await backupFile(TARGET_SETTINGS, backupDir, plan);
   plan.push({ action: "merge-json", to: TARGET_SETTINGS, strategy: opts.mode });
   await backupFile(TARGET_LAUNCH_AGENT, backupDir, plan);
@@ -483,6 +564,10 @@ async function applyInstall(opts, installPlan, apiKey) {
   await materializeBackups(plan, backupDir);
   await fs.mkdir(TARGET_PROXY, { recursive: true });
   await fs.mkdir(TARGET_LOCAL_BIN, { recursive: true });
+  await fs.mkdir(TARGET_SKILLS, { recursive: true });
+  await fs.mkdir(TARGET_AGENTS, { recursive: true });
+  await fs.mkdir(TARGET_COMMANDS, { recursive: true });
+  await fs.mkdir(TARGET_SKILL_INBOX, { recursive: true });
   await fs.mkdir(path.dirname(TARGET_LAUNCH_AGENT), { recursive: true });
   await fs.mkdir(path.dirname(TARGET_VSCODE_SETTINGS), { recursive: true });
   await fs.mkdir(path.join(HOME, ".claude", "logs"), { recursive: true });
@@ -490,12 +575,30 @@ async function applyInstall(opts, installPlan, apiKey) {
   for (const name of REQUIRED_PROXY_FILES) {
     await writeRenderedFile(path.join(PAYLOAD, name), path.join(TARGET_PROXY, name), nodePath, name.endsWith(".mjs") ? 0o755 : 0o644);
   }
+  const targetRegistry = path.join(TARGET_PROXY, "model-registry.json");
+  if (opts.mode === "fresh" || !(await exists(targetRegistry))) {
+    await writeRenderedFile(path.join(PAYLOAD, "model-registry.json"), targetRegistry, nodePath, 0o644);
+  }
   for (const name of WRAPPER_FILES) {
     await writeRenderedFile(path.join(WRAPPERS, name), path.join(TARGET_LOCAL_BIN, name), nodePath, 0o755);
   }
+  for (const name of SKILL_DIRS) {
+    await writeRenderedFile(path.join(CLAUDE_ASSETS, "skills", name, "SKILL.md"), path.join(TARGET_SKILLS, name, "SKILL.md"), nodePath, 0o644);
+  }
+  for (const name of AGENT_FILES) {
+    await writeRenderedFile(path.join(CLAUDE_ASSETS, "agents", name), path.join(TARGET_AGENTS, name), nodePath, 0o644);
+  }
+  for (const name of COMMAND_FILES) {
+    await writeRenderedFile(path.join(CLAUDE_ASSETS, "commands", name), path.join(TARGET_COMMANDS, name), nodePath, 0o644);
+  }
+  await writeRenderedFile(path.join(CLAUDE_ASSETS, "statusline", "openrouter-lts-statusline.mjs"), TARGET_STATUSLINE, nodePath, 0o755);
+  if (opts.mode === "fresh" || !(await exists(TARGET_AGENT_POLICY))) {
+    await writeRenderedFile(path.join(CLAUDE_ASSETS, "agent-policy.json"), TARGET_AGENT_POLICY, nodePath, 0o644);
+  }
 
   const existingSettings = await maybeJson(TARGET_SETTINGS);
-  const mergedSettings = mergeSettings(existingSettings, apiKey);
+  const agentPolicy = await maybeJson(TARGET_AGENT_POLICY) || await maybeJson(path.join(CLAUDE_ASSETS, "agent-policy.json"));
+  const mergedSettings = mergeSettings(existingSettings, apiKey, nodePath, agentPolicy);
   await fs.writeFile(TARGET_SETTINGS, JSON.stringify(mergedSettings, null, 2) + "\n", { mode: 0o600 });
 
   const launchTemplate = await fs.readFile(path.join(TEMPLATES, "launchagent.plist.template"), "utf8");
@@ -509,6 +612,8 @@ async function applyInstall(opts, installPlan, apiKey) {
       "claudeCode.claudeProcessWrapper": path.join(HOME, ".local", "bin", "claude-full"),
       "claudeCode.disableLoginPrompt": true,
       "claudeCode.preferredLocation": "panel",
+      "extensions.autoUpdate": false,
+      "extensions.autoCheckUpdates": false,
     };
     await fs.writeFile(TARGET_VSCODE_SETTINGS, JSON.stringify(nextVsCode, null, 2) + "\n");
   }

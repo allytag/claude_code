@@ -13,8 +13,7 @@
     "ANTHROPIC_DEFAULT_SONNET_MODEL_DESCRIPTION": "Main model for coding, feature implementation, refactors, and production-grade project building.",
     "ANTHROPIC_DEFAULT_HAIKU_MODEL": "qwen/qwen3.6-plus",
     "ANTHROPIC_DEFAULT_HAIKU_MODEL_NAME": "Qwen 3.6 Plus",
-    "ANTHROPIC_DEFAULT_HAIKU_MODEL_DESCRIPTION": "Cheap full-mode, subagent, and low-token candidate.",
-    "CLAUDE_CODE_SUBAGENT_MODEL": "qwen/qwen3.6-plus",
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL_DESCRIPTION": "Cheap full-mode, background, and low-token candidate.",
     "ANTHROPIC_CUSTOM_MODEL_OPTION": "z-ai/glm-5.1",
     "ANTHROPIC_CUSTOM_MODEL_OPTION_NAME": "GLM 5.1",
     "ANTHROPIC_CUSTOM_MODEL_OPTION_DESCRIPTION": "Comparison model."
@@ -24,5 +23,10 @@
   "effortLevel": "high",
   "enabledPlugins": {
     "caveman@caveman": false
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "__NODE__ __HOME__/.claude/statusline-openrouter-lts.mjs",
+    "padding": 0
   }
 }

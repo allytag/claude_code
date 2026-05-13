@@ -1,6 +1,6 @@
 {
-  "ltsVersion": "2026.05.07-1",
-  "generatedAt": "2026-05-13T03:25:15.412Z",
+  "ltsVersion": "2026.05.13-1",
+  "generatedAt": "2026-05-13T17:54:22.688Z",
   "platform": "macos-arm64-lts-linux-windows-beta",
   "nodeVersionMin": "20.0.0",
   "claudeCliMin": "2.1.131",
@@ -16,16 +16,16 @@
       "sha256": "b45c4758c0028ce4272416d367fc83849d0fd7e0d2e9a37260fe7c71bd9baf26"
     },
     "README.md": {
-      "size": 12817,
-      "sha256": "418cb28c974f24d52e3375d5929ebafe246ecce0f2314dc7978f02523be81b01"
+      "size": 14290,
+      "sha256": "5e57a517543a9b38fcb223ef0bab706164460ed0f6a7747703db7b27a268298b"
     },
     "docs/ARCHITECTURE.md": {
-      "size": 9470,
-      "sha256": "f99402c25d9384a350b840cbefb347ba4af335c4ab46e73e25f36ca2d2f70aaa"
+      "size": 10952,
+      "sha256": "fe5129439c8555a3ffc5bd825059d9f420618c92bb4da39b4704b7ded92a2f1d"
     },
     "docs/INSTALL.md": {
-      "size": 5647,
-      "sha256": "b1b422b4ef7c2596eb07c8af6fe84af86f00a59348e06d5e407388f515e1f1d9"
+      "size": 7236,
+      "sha256": "3717576a9c3a5cc1717026eec2898e570bef65ce76a8bcdd361a8fc15e5ff661"
     },
     "docs/PLATFORMS.md": {
       "size": 1915,
@@ -40,36 +40,104 @@
       "sha256": "dacd567268ed7825fdc65d7c65d358b8816166b8da2a242a86fdcfac57da0d75"
     },
     "docs/UPDATE.md": {
-      "size": 4635,
-      "sha256": "0dc349a2544780fa9fbe86f9b6c75ee8ab341c01f0cc53a0ff4f64c91613393f"
+      "size": 4776,
+      "sha256": "205ff9ff2738bb46ffa3f0e50a72b14fefc2ef5d28e20fdee02f1d1379ee6d45"
     },
     "install.sh": {
       "size": 85,
       "sha256": "b9830469612b2b45acf327882c9969652fdaa465afd4dfc377e43d6a1add5944"
     },
+    "payload/claude-assets/agent-policy.json": {
+      "size": 2165,
+      "sha256": "d86e1c94cfbd6e93d57363de2238c44de092fdd16039c3b6366315ccffdbc530"
+    },
     "payload/claude-assets/agents/architect.md": {
-      "size": 529,
-      "sha256": "5e203c5f745dc4d32e1835e80e115bf12ad71abf6bc9b1b600f30095aff8ab0e"
+      "size": 574,
+      "sha256": "c7901c445a7be9a1a7d0eedee43093f79bea81a9513a4196048c08c2480990f0"
+    },
+    "payload/claude-assets/agents/context-scout.md": {
+      "size": 532,
+      "sha256": "7db5f3dae603a30abb803af33fe9b0dd2816b8121ccfc24f04ccc33870de7043"
+    },
+    "payload/claude-assets/agents/frontend-implementer.md": {
+      "size": 558,
+      "sha256": "3c4111aa27099271a358707cb53be08fc859702f18a227b3e0fdfe8df1d1f91e"
     },
     "payload/claude-assets/agents/frontend-reviewer.md": {
-      "size": 642,
-      "sha256": "0af0c70171d049d8b36ef21bf221b74fa6aea495ddaa2f79de32ed4cbe83d71f"
+      "size": 663,
+      "sha256": "cf1c981618b4c836a9f7b700a029ba3b628c80f1ec6ada2c67ef0714871550ce"
+    },
+    "payload/claude-assets/agents/performance-reviewer.md": {
+      "size": 435,
+      "sha256": "150a09369598bce708ef51c17380796f02418e57e472995b54f9652b26a48202"
+    },
+    "payload/claude-assets/agents/release-checker.md": {
+      "size": 498,
+      "sha256": "bb116e8ee865edfb690debe938331e289d81891b825494c7a374d578f9f80d27"
     },
     "payload/claude-assets/agents/researcher.md": {
       "size": 497,
       "sha256": "59ad59c8096fc625034eea641c42c2bba84b76dbc25e6f383dec75753dd015cb"
     },
+    "payload/claude-assets/agents/security-reviewer.md": {
+      "size": 410,
+      "sha256": "074688525007d12d6d989a4ae2285fc9d4fd5822002af59ecbd53d55594937db"
+    },
     "payload/claude-assets/agents/test-runner.md": {
-      "size": 555,
-      "sha256": "17c871e1138da2f611083f592a089d590ed3892e538ab3e170255c941275692c"
+      "size": 580,
+      "sha256": "66d309a27f66e0a96d7fbaa7ce113c96be0f2a000921ef4591fc6d90b283b90e"
     },
     "payload/claude-assets/agents/ui-designer.md": {
-      "size": 629,
-      "sha256": "fe7dc02d3635c47bace5fa16db8ce1e279b02bbfaddb0a84eac733d48a9afcc8"
+      "size": 669,
+      "sha256": "536ccdcbf1fa983e3d98a4f14c27b90e10153b76cdc33d2cf5144c906de657a7"
+    },
+    "payload/claude-assets/commands/context-scout.md": {
+      "size": 423,
+      "sha256": "8121bcd482961f9b965b9f78127208095b346dda47f079760d3fc18648bf0dd0"
+    },
+    "payload/claude-assets/commands/debug-loop.md": {
+      "size": 414,
+      "sha256": "d4217fdd10edd7a204671fd7246c97931ddb784e4416b7b2858fb1690904100e"
+    },
+    "payload/claude-assets/commands/release-check.md": {
+      "size": 436,
+      "sha256": "2e952dccf75b3bc0e637d3c1dc8f81e3a2e55c67f47cd93677269c2578c2f4ba"
+    },
+    "payload/claude-assets/commands/security-audit.md": {
+      "size": 406,
+      "sha256": "75890f3d3ff87dedf057c61008044e5a0ba7693d46925da8e5ef76bf89b0c487"
+    },
+    "payload/claude-assets/commands/ship-feature.md": {
+      "size": 492,
+      "sha256": "447f543d305bac4fad913a2c411c9f8dfd2572466c518a5a30f50659c4130329"
+    },
+    "payload/claude-assets/commands/skill-forge.md": {
+      "size": 731,
+      "sha256": "a5ff137d459c5a58bafa53c760e8a13f10c3fb80f407284910e2ce89f616afb8"
+    },
+    "payload/claude-assets/commands/smart-plan.md": {
+      "size": 456,
+      "sha256": "77d4fb85f6c217c7797149a0fbe84fb265f51708707a08517bf4da5aaf530276"
+    },
+    "payload/claude-assets/commands/tool-coach.md": {
+      "size": 365,
+      "sha256": "3a2064845c479b0bf1a85292e5b3d0240966bc36dba71d33878bbe3f114e9d2d"
+    },
+    "payload/claude-assets/commands/ui-polish.md": {
+      "size": 531,
+      "sha256": "809b481a8437b52450dd1df02c5a24a5276a6a36c195197016e1e41c589458da"
+    },
+    "payload/claude-assets/skills/api-contract/SKILL.md": {
+      "size": 1077,
+      "sha256": "f572335d2b56181e467100b615e40722265e7ae32e2e178cd334a26f7d819376"
     },
     "payload/claude-assets/skills/code-review/SKILL.md": {
       "size": 744,
       "sha256": "8a52bf6ddc78f2273a43ba169f450b3dd61fcdb140f1bfc8a0443de073e5d9c7"
+    },
+    "payload/claude-assets/skills/context-intelligence/SKILL.md": {
+      "size": 1590,
+      "sha256": "91241484a3a85642cf52c0c3b2d825b8712df9fff8826785e7937545c4726c3f"
     },
     "payload/claude-assets/skills/debug-loop/SKILL.md": {
       "size": 936,
@@ -79,17 +147,45 @@
       "size": 1517,
       "sha256": "879630d4150e582a49d0ceb19d4f34fa0d058c808140516bc4197a30c3cc4497"
     },
+    "payload/claude-assets/skills/performance-pass/SKILL.md": {
+      "size": 1032,
+      "sha256": "b2e578ab050b4e46baed45cfd9d2e3811121ab29910e1a3d29c6bebf2580cd4d"
+    },
+    "payload/claude-assets/skills/premium-ui/SKILL.md": {
+      "size": 1501,
+      "sha256": "a82492fd364a2abce0a0a6b9863836f91ae3f93bd84c747fc5d08e82f1975fde"
+    },
     "payload/claude-assets/skills/saas-architecture/SKILL.md": {
       "size": 1008,
       "sha256": "759c79f09c3e34b1a5663d076198a96b1ed72161dd3685e07928b67f0b710c3d"
+    },
+    "payload/claude-assets/skills/security-hardening/SKILL.md": {
+      "size": 987,
+      "sha256": "86a8b8c59557628413d35f5c61ea283d4872e36b4f94b905a8eb9a1c577d7907"
     },
     "payload/claude-assets/skills/ship-feature/SKILL.md": {
       "size": 1179,
       "sha256": "4b68dbdb41675146836f08e335b465a7f133bb2d5d27bc91ee2d42fdcde4f038"
     },
+    "payload/claude-assets/skills/skill-evolution/SKILL.md": {
+      "size": 1670,
+      "sha256": "4fed07f16bb81a1c253184e0a0c6e3570a139679122374667aa0413876269b88"
+    },
+    "payload/claude-assets/skills/test-strategy/SKILL.md": {
+      "size": 985,
+      "sha256": "16f402c8105ac56cf1abd7353ab651b00f8407289620d18f8fcf40749608171f"
+    },
+    "payload/claude-assets/skills/tool-coach/SKILL.md": {
+      "size": 1606,
+      "sha256": "d179ab6456211a0a809636a874b036a0926afdb5c0e9fe95dc6d07762c90d3b0"
+    },
+    "payload/claude-assets/statusline/openrouter-lts-statusline.mjs": {
+      "size": 2583,
+      "sha256": "5ab75e0527d9f3137d7d49768468fd2d80eedfbc82a912be4046333cc14cd97b"
+    },
     "payload/openrouter-claude-proxy/README.md": {
-      "size": 11308,
-      "sha256": "bcea82e801c4f7b8dea476d063ae3d83b4cf8ce57a06f2afee711b837cea9d2c"
+      "size": 11902,
+      "sha256": "0bea4425b0d1a25062874582eb0ff06b3e7cf18ca326bcd1246b31681e2c82cf"
     },
     "payload/openrouter-claude-proxy/claude-env.mjs": {
       "size": 2350,
@@ -100,20 +196,20 @@
       "sha256": "344c0bdfbac7708bbb7ba84af6ed2b15d609cb1141890c0e013a0ecbcda88b1b"
     },
     "payload/openrouter-claude-proxy/doctor.mjs": {
-      "size": 23871,
-      "sha256": "2091ddac40035713217d2cf932243b509ba4b977cee314fdd0d8f466003639e8"
+      "size": 28304,
+      "sha256": "314dc3cc9a03b8ffbfd59e665de6f417d26455c824026ec8d6fada7d77085513"
     },
     "payload/openrouter-claude-proxy/model-registry.json": {
       "size": 8390,
       "sha256": "9fa16b0b059b7254916b5a630425bb08784d11c2e7db8debb710391e2816630c"
     },
     "payload/openrouter-claude-proxy/modelctl.mjs": {
-      "size": 47586,
-      "sha256": "67a67eb0c88fb9cf8316339248a010de423786453db2065875c24eefc1572104"
+      "size": 48607,
+      "sha256": "4ffecc622b7c2cd72b430b96205a6c289c52034c4f172c922ccc75e6f89499cb"
     },
     "payload/openrouter-claude-proxy/package.json": {
-      "size": 345,
-      "sha256": "eefee8c69a75a5f4e27b68609c139b3364b444fcfea926726141afd9cb3b127a"
+      "size": 388,
+      "sha256": "ffd7845837efd843b6d53763e0201db92896929e70cbb739ab4351259b6c4cd3"
     },
     "payload/openrouter-claude-proxy/patch-extension.mjs": {
       "size": 8897,
@@ -124,8 +220,12 @@
       "sha256": "1b2cdfb367ca300c035e27a6f06f4ec810c1bca490a6d52a3ea0ce311f467c41"
     },
     "payload/openrouter-claude-proxy/server.mjs": {
-      "size": 35400,
-      "sha256": "0c5d2b5bc6dc322c229a102bcbac35e8864c5184dcf5d8d08510aa6b1a17195b"
+      "size": 35500,
+      "sha256": "bdbb3d3695baf6f35ee82f3662cba85c819d6e513d806632c55f8d4c154673de"
+    },
+    "payload/openrouter-claude-proxy/skill-guard.mjs": {
+      "size": 8338,
+      "sha256": "45e98ff02d2fe9487c1b910eb32fbfcc21195b56688214910b7ab34f9a75621f"
     },
     "platforms/linux/README.md": {
       "size": 1655,
@@ -241,15 +341,15 @@
     },
     "scripts/build-manifest.mjs": {
       "size": 1963,
-      "sha256": "afac8553537eaf8667d091ee854c4efb4080c3a51fe5dcd078ae95f30609ee4d"
+      "sha256": "bdff37716e036cbb9de947d142566230e1047ac04ac219d446bee5736b2c6984"
     },
     "scripts/doctor-local.mjs": {
-      "size": 3721,
-      "sha256": "0c4025cd8eb0f299817061c5ecc94798283da76b55cbdd53ee921f66d7a04d16"
+      "size": 3923,
+      "sha256": "9b91d76269462585fff4c35b02296274272889ca175e80ce1d854e0cdb9d0689"
     },
     "scripts/install.mjs": {
-      "size": 23104,
-      "sha256": "2817f4638c882631243ce956aa584fb823cc22cb483ce221c5d8a660503bd115"
+      "size": 27672,
+      "sha256": "39bf79674df621f33e9d556b0e91cde85ae75a948c6edbab4ce02db7c82987db"
     },
     "scripts/redact-check.mjs": {
       "size": 1539,
@@ -260,8 +360,8 @@
       "sha256": "ecd540845a6281ead84814d97c1256266600cb617de787360965f34c48fc29b6"
     },
     "templates/settings.json.template": {
-      "size": 1359,
-      "sha256": "4e1b62dce5149c466c4ff6333f1a26568fd15ce2754214a81471a7618153993b"
+      "size": 1443,
+      "sha256": "a523d3e3fcad44df0af3ce9ae4d68a2c812d95cdb0059bb89b7749b755af94d9"
     },
     "templates/vscode-settings.patch.json": {
       "size": 267,

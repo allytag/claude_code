@@ -38,9 +38,14 @@ const files = [
   "payload/openrouter-claude-proxy/claude-low.mjs",
   "payload/openrouter-claude-proxy/claude-env.mjs",
   "payload/openrouter-claude-proxy/safe-update.mjs",
+  "payload/openrouter-claude-proxy/skill-guard.mjs",
 ];
 
 for (const file of await walk(path.join(REPO, "platforms"))) {
+  if (file.endsWith(".mjs")) files.push(path.relative(REPO, file));
+}
+
+for (const file of await walk(path.join(REPO, "payload", "claude-assets"))) {
   if (file.endsWith(".mjs")) files.push(path.relative(REPO, file));
 }
 

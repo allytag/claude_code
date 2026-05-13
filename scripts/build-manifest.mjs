@@ -38,7 +38,7 @@ for (const file of INCLUDE_FILES) {
 }
 
 const manifest = {
-  ltsVersion: "2026.05.07-1",
+  ltsVersion: "2026.05.13-1",
   generatedAt: new Date().toISOString(),
   platform: "macos-arm64-lts-linux-windows-beta",
   nodeVersionMin: "20.0.0",

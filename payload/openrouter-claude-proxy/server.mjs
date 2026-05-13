@@ -771,6 +771,7 @@ function retryDelayMs(attempt, status) {
 async function fetchWithTransientRetry(upstreamUrl, options, metrics) {
   let lastError = null;
   const maxAttempts = RETRY_TRANSIENT ? MAX_RETRIES + 1 : 1;
+  const retryMetrics = metrics || { retryCount: 0, retryReasons: [] };
 
   for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
     try {
@@ -778,8 +779,8 @@ async function fetchWithTransientRetry(upstreamUrl, options, metrics) {
       if (!RETRY_TRANSIENT || attempt >= maxAttempts - 1 || !RETRY_STATUS_CODES.has(response.status)) {
         return response;
       }
-      metrics.retryCount += 1;
-      metrics.retryReasons.push(`http-${response.status}`);
+      retryMetrics.retryCount += 1;
+      retryMetrics.retryReasons.push(`http-${response.status}`);
       try {
         await response.arrayBuffer();
       } catch {
@@ -789,8 +790,8 @@ async function fetchWithTransientRetry(upstreamUrl, options, metrics) {
     } catch (error) {
       lastError = error;
       if (!RETRY_TRANSIENT || attempt >= maxAttempts - 1) throw error;
-      metrics.retryCount += 1;
-      metrics.retryReasons.push(`fetch-error:${error?.code || error?.name || "unknown"}`);
+      retryMetrics.retryCount += 1;
+      retryMetrics.retryReasons.push(`fetch-error:${error?.code || error?.name || "unknown"}`);
       await new Promise((resolve) => setTimeout(resolve, retryDelayMs(attempt, 0)));
     }
   }
@@ -899,7 +900,7 @@ async function handle(req, res) {
     method: req.method,
     headers,
     body: requestBody,
-  });
+  }, metrics);
 
   metrics.upstreamStatus = upstreamResponse.status;
   const responseType = upstreamResponse.headers.get("content-type") || "";

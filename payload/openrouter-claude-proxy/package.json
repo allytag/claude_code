@@ -1,6 +1,6 @@
 {
   "name": "openrouter-claude-proxy",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -9,6 +9,7 @@
     "model": "node modelctl.mjs",
     "claude-env": "node claude-env.mjs",
     "patch-extension": "node patch-extension.mjs",
-    "doctor": "node doctor.mjs"
+    "doctor": "node doctor.mjs",
+    "skill-guard": "node skill-guard.mjs"
   }
 }

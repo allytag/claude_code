@@ -4,7 +4,7 @@ description: Architecture specialist for hard design decisions, deep debugging s
 tools: Read, Grep, Glob
 model: opus
 effort: high
-skills: saas-architecture
+skills: saas-architecture,api-contract,context-intelligence,tool-coach
 color: purple
 ---
 

@@ -123,25 +123,44 @@ claude-router tail
 Each request logs model, provider, input/output tokens, cache_read, cost, latency.
 Newer metrics also include finish reason, retry count, and observe-only context advice.
 
-### Use built-in Skills and subagents
+### Use built-in Skills, subagents, and slash commands
 
-The installer adds focused Claude Code Skills and agents:
+The installer adds focused Claude Code Skills, agents, commands, and a statusline:
 
 ```sh
 ls ~/.claude/skills
 ls ~/.claude/agents
+ls ~/.claude/commands
 ```
 
 Useful prompts:
 
 ```text
-Use the frontend-design skill and ui-designer agent to improve this landing page.
+Use /smart-plan to plan this feature before coding.
+Use /context-scout before editing unfamiliar code.
+Use /ui-polish to improve this landing page.
 Use the frontend-reviewer agent to review the UI before final.
 Use the test-runner agent after these code changes.
 Use the architect agent for the data model tradeoff.
+Use the security-reviewer agent before release.
+Use /tool-coach when tool choice is unclear.
+Use /skill-forge when the current skills are not enough.
 ```
 
-Skills load only when relevant, so long design/review instructions do not sit in every normal turn.
+Skills load only when relevant, so long design/review instructions do not sit in every normal turn. Slash commands give explicit workflows when you want tight control.
+
+The statusline shows current OpenRouter role/model, provider, last cost, tokens, cache, finish reason, retry count, and compact hints. It is local-only and does not call any model.
+
+Agent model routing uses each agent's `model` frontmatter (`haiku`, `sonnet`, or `opus`). The global `CLAUDE_CODE_SUBAGENT_MODEL` override is intentionally unset so cheap read-only agents can use `haiku`, implementation/review agents can use `sonnet`, and architecture can use `opus`.
+
+Skill evolution is guarded. Drafts go to `~/.claude/skill-inbox/<skill-id>/SKILL.md` and must pass:
+
+```sh
+node ~/.claude/openrouter-claude-proxy/skill-guard.mjs validate ~/.claude/skill-inbox/<skill-id>
+node ~/.claude/openrouter-claude-proxy/skill-guard.mjs promote ~/.claude/skill-inbox/<skill-id> --apply
+```
+
+Promotion backs up the existing skill first and only touches that one skill directory.
 
 ### Inspect and switch models
 
@@ -198,6 +217,12 @@ The installer leaves these in place:
 
 ```text
 ~/.claude/openrouter-claude-proxy/         proxy + registry + scripts
+~/.claude/skills/                          workflow skills
+~/.claude/agents/                          specialist subagents
+~/.claude/commands/                        user slash commands
+~/.claude/skill-inbox/                     guarded skill drafts
+~/.claude/agent-policy.json                agent model policy
+~/.claude/statusline-openrouter-lts.mjs    local statusline
 ~/.claude/settings.json                    your env (token here)
 ~/.claude/installer-backups/<stamp>/       full pre-install backup
 ~/.local/bin/claude-*                      wrappers

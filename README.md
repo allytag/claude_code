@@ -43,7 +43,8 @@ That's it. Claude Code now runs on your chosen OpenRouter model with full tool a
 | Hidden reasoning tokens silently inflate cost | Strips reasoning fields by default, registry-gated pass-through for hard tasks |
 | No cache → 24 K-token floor on every turn | Auto-injects cache markers + provider pinning (observed 57% turn-2 cost drop on Kimi+Novita) |
 | Auto-updates can break your custom config | Updates frozen by default; `claude-safe-update` is the manual audited path |
-| Good code but weak UI/design output | Bundled Claude Code Skills + subagents for design, review, architecture, debug, and shipping |
+| Good code but weak UI/design output | Bundled Claude Code Skills, slash commands, statusline, and subagents for design, review, architecture, debug, security, performance, tool discipline, and shipping |
+| Skills may become insufficient over time | Skill inbox + guard pipeline drafts, validates, and promotes new skills only after approval |
 | Setup state spread across many files | Single registry + doctor + cleanup tool |
 
 ---
@@ -59,7 +60,9 @@ That's it. Claude Code now runs on your chosen OpenRouter model with full tool a
 <tr><td><b>Internal Haiku remap</b></td><td>Claude Code's silent background Haiku calls re-routed to your <code>cheapFull</code> model. Safety-gated (no tools, ≤2 messages).</td></tr>
 <tr><td><b>Reasoning policy</b></td><td>Reasoning passes through only for registry-allowlisted models on <code>/effort high</code>. Others stripped to prevent surprise cost.</td></tr>
 <tr><td><b>Failure handling</b></td><td>Logs finish reasons and retries transient provider failures once (<code>429</code>, <code>502</code>, timeout/fetch errors) before surfacing failure.</td></tr>
-<tr><td><b>Skills + subagents</b></td><td>Installs focused Claude Code Skills and agents for frontend design, SaaS architecture, code review, debugging, testing, and research.</td></tr>
+<tr><td><b>Power Pack</b></td><td>Installs focused Claude Code Skills, agents, and slash commands for context scouting, premium UI, SaaS architecture, API contracts, testing, security, performance, tool coaching, debugging, and release checks.</td></tr>
+<tr><td><b>Skill evolution guard</b></td><td>New skills are drafted into <code>~/.claude/skill-inbox</code>, checked by <code>skill-guard.mjs</code>, and promoted only with explicit <code>--apply</code>.</td></tr>
+<tr><td><b>Statusline</b></td><td>Shows active OpenRouter role/model, provider, last cost, tokens, cache, finish reason, retry count, and compact hints without model calls.</td></tr>
 <tr><td><b>Doctor + cleanup</b></td><td>Health, drift detection, cache readiness, stale-data cleanup. Caveman/Desktop/projects protected.</td></tr>
 <tr><td><b>Frozen updates</b></td><td>CLI auto-updater and VS Code extension update checks disabled. <code>claude-safe-update</code> snapshots, patches, validates, restores on failure.</td></tr>
 <tr><td><b>LTS env injection</b></td><td>Wrappers boot-resilient. Survives reboots, fresh shells, OS updates.</td></tr>
@@ -176,7 +179,21 @@ See [docs/UPDATE.md](docs/UPDATE.md).
 | Cleanup apply | `claude-router cleanup all-safe --apply` |
 | Update Claude Code safely | `claude-safe-update latest --dry-run` then `claude-safe-update latest` |
 | Run doctor | `node ~/.claude/openrouter-claude-proxy/doctor.mjs` |
-| List installed Skills/agents | `ls ~/.claude/skills ~/.claude/agents` |
+| List installed Skills/agents/commands | `ls ~/.claude/skills ~/.claude/agents ~/.claude/commands` |
+
+## Built-in Power Commands
+
+| Command | Use case |
+|---|---|
+| `/smart-plan` | Compact implementation plan before coding |
+| `/context-scout` | Find relevant files without dumping whole repo |
+| `/ui-polish` | Premium UI pass for pages/components |
+| `/ship-feature` | Plan → implement → test workflow |
+| `/debug-loop` | Evidence-first bug fix workflow |
+| `/release-check` | Final ship/no-ship review |
+| `/security-audit` | Security-focused read-only audit |
+| `/skill-forge` | Draft guarded skill upgrades into inbox |
+| `/tool-coach` | Choose safest tool sequence before work |
 
 Full daily workflow in [docs/INSTALL.md](docs/INSTALL.md#daily-workflow).
 
@@ -188,13 +205,13 @@ Full daily workflow in [docs/INSTALL.md](docs/INSTALL.md#daily-workflow).
 main      → moonshotai/kimi-k2.6        (observed cache; Novita pin)
 cheapFull → qwen/qwen3.6-plus           (cheap, large context)
 hard      → deepseek/deepseek-v4-pro    (manual; reasoning passes through)
-subagent  → qwen/qwen3.6-plus
+subagent  → qwen/qwen3.6-plus           (manual fallback role; installed agents use frontmatter policy)
 lowToken  → qwen/qwen3.6-plus
 backup    → deepseek/deepseek-v4-pro
 compare   → z-ai/glm-5.1
 ```
 
-Roles map to Claude Code's `sonnet` / `haiku` / `opus` slots automatically. Change any role with `claude-router use <role> <alias>`. Apply to settings with `claude-router apply-settings`.
+Roles map to Claude Code's `sonnet` / `haiku` / `opus` slots automatically. Installed agents use their own `model` frontmatter, so `CLAUDE_CODE_SUBAGENT_MODEL` stays unset by default. Change any role with `claude-router use <role> <alias>`. Apply to settings with `claude-router apply-settings`.
 
 ---
 

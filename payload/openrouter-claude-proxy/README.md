@@ -31,6 +31,8 @@ claude-low
 - Remap only verified tiny internal Claude Code Haiku background calls to the registry `cheapFull` role.
 - Record finish reasons, retry count, context advice, provider, tokens, and cost.
 - Retry transient provider/network failures once by default.
+- Report installed Skills, agents, slash commands, and statusline through doctor.
+- Guard skill drafts through `skill-guard.mjs` before optional promotion.
 
 ## Commands
 
@@ -109,6 +111,16 @@ claude-role main -p "say hi"
 ```
 
 `or-model` remains a backward-compatible alias for `claude-router`.
+
+Skill guard:
+
+```sh
+node __HOME__/.claude/openrouter-claude-proxy/skill-guard.mjs status
+node __HOME__/.claude/openrouter-claude-proxy/skill-guard.mjs validate __HOME__/.claude/skill-inbox/<skill-id>
+node __HOME__/.claude/openrouter-claude-proxy/skill-guard.mjs promote __HOME__/.claude/skill-inbox/<skill-id> --apply
+```
+
+Promotion backs up the old skill and writes only the target skill directory. No skill is installed automatically.
 
 Cleanup (always dry-run unless `--apply`):
 
