@@ -29,6 +29,8 @@ claude-low
 - Append JSONL metrics only when debug logging is enabled.
 - Provide separate low-token wrapper for simple Q&A without Claude Code tool contract.
 - Remap only verified tiny internal Claude Code Haiku background calls to the registry `cheapFull` role.
+- Record finish reasons, retry count, context advice, provider, tokens, and cost.
+- Retry transient provider/network failures once by default.
 
 ## Commands
 
@@ -85,6 +87,8 @@ claude-deepseek
 
 `claude-full`, `claude-model`, and `claude-role` run the original Claude binary through `claude-env.mjs`, which injects `ANTHROPIC_BASE_URL`, `ANTHROPIC_AUTH_TOKEN`, and `ANTHROPIC_API_KEY=""` from `__HOME__/.claude/settings.json` without printing the token.
 `DISABLE_AUTOUPDATER=1` is also forwarded so surprise auto-update paths stay off. `DISABLE_UPDATES=1` is intentionally not set because it can block manual safe updates.
+
+VS Code extension update checks are disabled by installer settings, and `patch-extension.mjs` hides the Claude Code extension update command. Manual update path remains `claude-safe-update`.
 
 Claude router/controller:
 

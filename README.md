@@ -42,7 +42,8 @@ That's it. Claude Code now runs on your chosen OpenRouter model with full tool a
 | Custom-model setups break Claude Code's tools/file editing | Preserves the full agentic protocol — no compromise mode |
 | Hidden reasoning tokens silently inflate cost | Strips reasoning fields by default, registry-gated pass-through for hard tasks |
 | No cache → 24 K-token floor on every turn | Auto-injects cache markers + provider pinning (observed 57% turn-2 cost drop on Kimi+Novita) |
-| Auto-updates can break your custom config | `claude-safe-update` with CLI + extension snapshots, validation, rollback |
+| Auto-updates can break your custom config | Updates frozen by default; `claude-safe-update` is the manual audited path |
+| Good code but weak UI/design output | Bundled Claude Code Skills + subagents for design, review, architecture, debug, and shipping |
 | Setup state spread across many files | Single registry + doctor + cleanup tool |
 
 ---
@@ -57,8 +58,10 @@ That's it. Claude Code now runs on your chosen OpenRouter model with full tool a
 <tr><td><b>Smart caching</b></td><td>Auto-inject Anthropic cache_control markers. Provider pinning via registry to keep cache continuity.</td></tr>
 <tr><td><b>Internal Haiku remap</b></td><td>Claude Code's silent background Haiku calls re-routed to your <code>cheapFull</code> model. Safety-gated (no tools, ≤2 messages).</td></tr>
 <tr><td><b>Reasoning policy</b></td><td>Reasoning passes through only for registry-allowlisted models on <code>/effort high</code>. Others stripped to prevent surprise cost.</td></tr>
+<tr><td><b>Failure handling</b></td><td>Logs finish reasons and retries transient provider failures once (<code>429</code>, <code>502</code>, timeout/fetch errors) before surfacing failure.</td></tr>
+<tr><td><b>Skills + subagents</b></td><td>Installs focused Claude Code Skills and agents for frontend design, SaaS architecture, code review, debugging, testing, and research.</td></tr>
 <tr><td><b>Doctor + cleanup</b></td><td>Health, drift detection, cache readiness, stale-data cleanup. Caveman/Desktop/projects protected.</td></tr>
-<tr><td><b>Safe updates</b></td><td><code>claude-safe-update</code> snapshots CLI + VS Code extension, runs official installers with timeout, patches, validates, restores on failure.</td></tr>
+<tr><td><b>Frozen updates</b></td><td>CLI auto-updater and VS Code extension update checks disabled. <code>claude-safe-update</code> snapshots, patches, validates, restores on failure.</td></tr>
 <tr><td><b>LTS env injection</b></td><td>Wrappers boot-resilient. Survives reboots, fresh shells, OS updates.</td></tr>
 </table>
 
@@ -74,6 +77,7 @@ That's it. Claude Code now runs on your chosen OpenRouter model with full tool a
 | Provider pinning | ❌ | ❌ | ✅ |
 | Update safety | manual | manual | ✅ snapshot+rollback |
 | Cost guard / metrics | partial | none | ✅ privacy-safe metrics |
+| Skills / subagents | ✅ | varies | ✅ installed + OpenRouter-routed |
 | No vendor lock-in | ❌ | partial | ✅ swap any OpenRouter model |
 
 ---
@@ -172,6 +176,7 @@ See [docs/UPDATE.md](docs/UPDATE.md).
 | Cleanup apply | `claude-router cleanup all-safe --apply` |
 | Update Claude Code safely | `claude-safe-update latest --dry-run` then `claude-safe-update latest` |
 | Run doctor | `node ~/.claude/openrouter-claude-proxy/doctor.mjs` |
+| List installed Skills/agents | `ls ~/.claude/skills ~/.claude/agents` |
 
 Full daily workflow in [docs/INSTALL.md](docs/INSTALL.md#daily-workflow).
 

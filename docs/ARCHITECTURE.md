@@ -36,13 +36,17 @@ sequenceDiagram
 | **Model registry** | `~/.claude/openrouter-claude-proxy/model-registry.json` | Single source of truth for roles → aliases → OpenRouter IDs + observed cache/provider data. |
 | **`modelctl.mjs`** | `~/.claude/openrouter-claude-proxy/` | Backs `claude-router` / `or-model` commands (status, add, use, remove, cleanup). |
 | **`safe-update.mjs`** | `~/.claude/openrouter-claude-proxy/` | Snapshot → install → validate → rollback updater. |
-| **Patcher** | `~/.claude/openrouter-claude-proxy/patch-extension.mjs` | Hides `redacted_thinking` UI errors, forces extension thinking off. Re-applies on extension updates. |
+| **Patcher** | `~/.claude/openrouter-claude-proxy/patch-extension.mjs` | Hides `redacted_thinking` UI errors, forces extension thinking off, hides extension update command. Re-applies on extension updates. |
 | **Doctor** | `~/.claude/openrouter-claude-proxy/doctor.mjs` | Read-only diagnosis. Drift, cache readiness, last metrics. |
 | **LaunchAgent** | `~/Library/LaunchAgents/com.codex.openrouter-claude-proxy.plist` | Keeps proxy running, re-patches extension every 60 s. |
+| **Skills** | `~/.claude/skills/` | Focused workflows loaded only when relevant: frontend design, shipping, debug, review, SaaS architecture. |
+| **Subagents** | `~/.claude/agents/` | Specialized read-only or validation agents for UI design, frontend review, tests, architecture, and research. |
 
 ## Proxy Pipeline
 
 Each request goes through this pipeline in order. Each step is independently switchable via env flag.
+
+The proxy also records finish reasons, retry count, context advice, cache usage, provider, tokens, and cost without logging prompts, file contents, API keys, or full tool schemas.
 
 ```text
 ┌──────────────────────────┐

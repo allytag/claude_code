@@ -13,9 +13,12 @@ const execFileAsync = promisify(execFile);
 const REPO = path.resolve(path.join(path.dirname(new URL(import.meta.url).pathname), ".."));
 const HOME = os.homedir();
 const PAYLOAD = path.join(REPO, "payload", "openrouter-claude-proxy");
+const CLAUDE_ASSETS = path.join(REPO, "payload", "claude-assets");
 const WRAPPERS = path.join(REPO, "wrappers");
 const TEMPLATES = path.join(REPO, "templates");
 const TARGET_PROXY = path.join(HOME, ".claude", "openrouter-claude-proxy");
+const TARGET_SKILLS = path.join(HOME, ".claude", "skills");
+const TARGET_AGENTS = path.join(HOME, ".claude", "agents");
 const TARGET_SETTINGS = path.join(HOME, ".claude", "settings.json");
 const TARGET_LOCAL_BIN = path.join(HOME, ".local", "bin");
 const TARGET_LAUNCH_AGENT = path.join(HOME, "Library", "LaunchAgents", "com.codex.openrouter-claude-proxy.plist");
@@ -47,6 +50,22 @@ const WRAPPER_FILES = [
   "claude-qwen",
   "claude-deepseek",
   "claude-safe-update",
+];
+
+const SKILL_DIRS = [
+  "frontend-design",
+  "ship-feature",
+  "debug-loop",
+  "code-review",
+  "saas-architecture",
+];
+
+const AGENT_FILES = [
+  "ui-designer.md",
+  "frontend-reviewer.md",
+  "test-runner.md",
+  "architect.md",
+  "researcher.md",
 ];
 
 function usage() {
@@ -401,6 +420,26 @@ async function buildPlan(opts, report) {
   for (const name of WRAPPER_FILES) {
     await copyFileWithBackup(path.join(WRAPPERS, name), path.join(TARGET_LOCAL_BIN, name), backupDir, nodePath, 0o755, plan);
   }
+  for (const name of SKILL_DIRS) {
+    await copyFileWithBackup(
+      path.join(CLAUDE_ASSETS, "skills", name, "SKILL.md"),
+      path.join(TARGET_SKILLS, name, "SKILL.md"),
+      backupDir,
+      nodePath,
+      0o644,
+      plan,
+    );
+  }
+  for (const name of AGENT_FILES) {
+    await copyFileWithBackup(
+      path.join(CLAUDE_ASSETS, "agents", name),
+      path.join(TARGET_AGENTS, name),
+      backupDir,
+      nodePath,
+      0o644,
+      plan,
+    );
+  }
   await backupFile(TARGET_SETTINGS, backupDir, plan);
   plan.push({ action: "merge-json", to: TARGET_SETTINGS, strategy: opts.mode });
   await backupFile(TARGET_LAUNCH_AGENT, backupDir, plan);
@@ -409,7 +448,7 @@ async function buildPlan(opts, report) {
   const extensionPatchEnabled = vscodeEnabled && report.vscode.extensions.length > 0;
   if (vscodeEnabled) {
     await backupFile(TARGET_VSCODE_SETTINGS, backupDir, plan);
-    plan.push({ action: "merge-json", to: TARGET_VSCODE_SETTINGS, keys: ["claudeCode.useTerminal", "claudeCode.claudeProcessWrapper", "claudeCode.disableLoginPrompt", "claudeCode.preferredLocation"] });
+    plan.push({ action: "merge-json", to: TARGET_VSCODE_SETTINGS, keys: ["claudeCode.useTerminal", "claudeCode.claudeProcessWrapper", "claudeCode.disableLoginPrompt", "claudeCode.preferredLocation", "extensions.autoUpdate", "extensions.autoCheckUpdates"] });
   } else {
     plan.push({ action: "skip", reason: "VS Code CLI not found", target: TARGET_VSCODE_SETTINGS });
   }

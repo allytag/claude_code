@@ -102,6 +102,35 @@ async function patchExtensionHost(extensionDir, options = {}) {
   return { file, status: `${prefix}:${changes.join(",")}`, backup: result.backup };
 }
 
+async function patchPackageJson(extensionDir, options = {}) {
+  const file = path.join(extensionDir, "package.json");
+  if (!(await exists(file))) return { file, status: "missing" };
+
+  const before = await readText(file);
+  const pkg = JSON.parse(before);
+  const changes = [];
+
+  for (const command of pkg.contributes?.commands || []) {
+    if (command.command === "claude-vscode.update" && command.enablement !== "false") {
+      command.enablement = "false";
+      changes.push("update-command-disabled");
+    }
+  }
+
+  for (const menu of pkg.contributes?.menus?.commandPalette || []) {
+    if (menu.command === "claude-vscode.update" && menu.when !== "false") {
+      menu.when = "false";
+      changes.push("update-menu-hidden");
+    }
+  }
+
+  const after = `${JSON.stringify(pkg, null, 2)}\n`;
+  const result = await writeIfChanged(file, before, after, options);
+  const prefix = result.changed ? (options.dryRun ? "would-patch" : "patched") : "already-patched";
+  const detail = changes.length > 0 ? changes.join(",") : "update-command-hidden";
+  return { file, status: `${prefix}:${detail}`, backup: result.backup };
+}
+
 async function extensionInfo(dir) {
   const packageFile = path.join(dir, "package.json");
   let version = "unknown";
@@ -123,6 +152,7 @@ async function findExtensionDirs() {
 
 async function rollbackExtension(extensionDir) {
   const files = [
+    path.join(extensionDir, "package.json"),
     path.join(extensionDir, "extension.js"),
     path.join(extensionDir, "webview", "index.js"),
   ];
@@ -150,8 +180,10 @@ export async function patchAllExtensions({ log = () => {}, dryRun = false } = {}
     const info = await extensionInfo(dir);
     const webviewFile = path.join(dir, "webview", "index.js");
     const hostFile = path.join(dir, "extension.js");
+    const packageFile = path.join(dir, "package.json");
     let webview;
     let host;
+    let packageJson;
     try {
       webview = await patchWebview(dir, { dryRun });
     } catch (error) {
@@ -162,13 +194,19 @@ export async function patchAllExtensions({ log = () => {}, dryRun = false } = {}
     } catch (error) {
       host = patchError(hostFile, error);
     }
-    const result = { ...info, webview, host };
+    try {
+      packageJson = await patchPackageJson(dir, { dryRun });
+    } catch (error) {
+      packageJson = patchError(packageFile, error);
+    }
+    const result = { ...info, webview, host, packageJson };
     results.push(result);
-    log(`[patch-extension] ${info.name} version=${info.version} webview=${webview.status} host=${host.status}`);
+    log(`[patch-extension] ${info.name} version=${info.version} webview=${webview.status} host=${host.status} package=${packageJson.status}`);
     const webviewBad = webview.status.includes("missing") || webview.status.includes("unsupported") || webview.status.startsWith("error:");
     const hostBad = host.status.includes("pattern-missed") || host.status.includes("missing") || host.status.startsWith("error:");
-    if (webviewBad || hostBad) {
-      log(`[patch-extension] WARNING ${info.name} partial patch status: webview=${webview.status} host=${host.status} — review patch-extension.mjs regex against new extension version`);
+    const packageBad = packageJson.status.includes("missing") || packageJson.status.startsWith("error:");
+    if (webviewBad || hostBad || packageBad) {
+      log(`[patch-extension] WARNING ${info.name} partial patch status: webview=${webview.status} host=${host.status} package=${packageJson.status} — review patch-extension.mjs against new extension version`);
     }
   }
 

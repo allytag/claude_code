@@ -33,6 +33,10 @@
     <string>1</string>
     <key>OPENROUTER_PROXY_REMAP_INTERNAL_HAIKU</key>
     <string>1</string>
+    <key>OPENROUTER_PROXY_RETRY_TRANSIENT</key>
+    <string>1</string>
+    <key>OPENROUTER_PROXY_MAX_RETRIES</key>
+    <string>1</string>
   </dict>
 </dict>
 </plist>

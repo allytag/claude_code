@@ -2,5 +2,7 @@
   "claudeCode.useTerminal": true,
   "claudeCode.claudeProcessWrapper": "__HOME__/.local/bin/claude-full",
   "claudeCode.disableLoginPrompt": true,
-  "claudeCode.preferredLocation": "panel"
+  "claudeCode.preferredLocation": "panel",
+  "extensions.autoUpdate": false,
+  "extensions.autoCheckUpdates": false
 }

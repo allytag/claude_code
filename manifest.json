@@ -1,6 +1,6 @@
 {
   "ltsVersion": "2026.05.07-1",
-  "generatedAt": "2026-05-10T06:38:56.421Z",
+  "generatedAt": "2026-05-13T03:25:15.412Z",
   "platform": "macos-arm64-lts-linux-windows-beta",
   "nodeVersionMin": "20.0.0",
   "claudeCliMin": "2.1.131",
@@ -16,16 +16,16 @@
       "sha256": "b45c4758c0028ce4272416d367fc83849d0fd7e0d2e9a37260fe7c71bd9baf26"
     },
     "README.md": {
-      "size": 12145,
-      "sha256": "9d2a3f1210a6e77ec1665106b37fe7ec6896c2e97f71058d026e9c7881335bd4"
+      "size": 12817,
+      "sha256": "418cb28c974f24d52e3375d5929ebafe246ecce0f2314dc7978f02523be81b01"
     },
     "docs/ARCHITECTURE.md": {
-      "size": 8960,
-      "sha256": "b1a433131c51c2489077dde416d09ac347994260f958e63085e2edc54da7d947"
+      "size": 9470,
+      "sha256": "f99402c25d9384a350b840cbefb347ba4af335c4ab46e73e25f36ca2d2f70aaa"
     },
     "docs/INSTALL.md": {
-      "size": 5029,
-      "sha256": "26f368b453f34aa1b4d174ec0d5e2dd900eeba61c089c88f6354c16eaf9aea89"
+      "size": 5647,
+      "sha256": "b1b422b4ef7c2596eb07c8af6fe84af86f00a59348e06d5e407388f515e1f1d9"
     },
     "docs/PLATFORMS.md": {
       "size": 1915,
@@ -40,16 +40,56 @@
       "sha256": "dacd567268ed7825fdc65d7c65d358b8816166b8da2a242a86fdcfac57da0d75"
     },
     "docs/UPDATE.md": {
-      "size": 4358,
-      "sha256": "7ef4473d7d8249c48d9d3b1c7beb8bf7e278f964e38d2be14d63936c99486c74"
+      "size": 4635,
+      "sha256": "0dc349a2544780fa9fbe86f9b6c75ee8ab341c01f0cc53a0ff4f64c91613393f"
     },
     "install.sh": {
       "size": 85,
       "sha256": "b9830469612b2b45acf327882c9969652fdaa465afd4dfc377e43d6a1add5944"
     },
+    "payload/claude-assets/agents/architect.md": {
+      "size": 529,
+      "sha256": "5e203c5f745dc4d32e1835e80e115bf12ad71abf6bc9b1b600f30095aff8ab0e"
+    },
+    "payload/claude-assets/agents/frontend-reviewer.md": {
+      "size": 642,
+      "sha256": "0af0c70171d049d8b36ef21bf221b74fa6aea495ddaa2f79de32ed4cbe83d71f"
+    },
+    "payload/claude-assets/agents/researcher.md": {
+      "size": 497,
+      "sha256": "59ad59c8096fc625034eea641c42c2bba84b76dbc25e6f383dec75753dd015cb"
+    },
+    "payload/claude-assets/agents/test-runner.md": {
+      "size": 555,
+      "sha256": "17c871e1138da2f611083f592a089d590ed3892e538ab3e170255c941275692c"
+    },
+    "payload/claude-assets/agents/ui-designer.md": {
+      "size": 629,
+      "sha256": "fe7dc02d3635c47bace5fa16db8ce1e279b02bbfaddb0a84eac733d48a9afcc8"
+    },
+    "payload/claude-assets/skills/code-review/SKILL.md": {
+      "size": 744,
+      "sha256": "8a52bf6ddc78f2273a43ba169f450b3dd61fcdb140f1bfc8a0443de073e5d9c7"
+    },
+    "payload/claude-assets/skills/debug-loop/SKILL.md": {
+      "size": 936,
+      "sha256": "7702253f2c9eac379a1afd8de85b96c252ecd56bf1a557a8791db220e7007160"
+    },
+    "payload/claude-assets/skills/frontend-design/SKILL.md": {
+      "size": 1517,
+      "sha256": "879630d4150e582a49d0ceb19d4f34fa0d058c808140516bc4197a30c3cc4497"
+    },
+    "payload/claude-assets/skills/saas-architecture/SKILL.md": {
+      "size": 1008,
+      "sha256": "759c79f09c3e34b1a5663d076198a96b1ed72161dd3685e07928b67f0b710c3d"
+    },
+    "payload/claude-assets/skills/ship-feature/SKILL.md": {
+      "size": 1179,
+      "sha256": "4b68dbdb41675146836f08e335b465a7f133bb2d5d27bc91ee2d42fdcde4f038"
+    },
     "payload/openrouter-claude-proxy/README.md": {
-      "size": 10973,
-      "sha256": "4b7f5a9d859c93d7f282f1812ed3ec93c1d8760d0e50bed2e48033d89d568b37"
+      "size": 11308,
+      "sha256": "bcea82e801c4f7b8dea476d063ae3d83b4cf8ce57a06f2afee711b837cea9d2c"
     },
     "payload/openrouter-claude-proxy/claude-env.mjs": {
       "size": 2350,
@@ -60,8 +100,8 @@
       "sha256": "344c0bdfbac7708bbb7ba84af6ed2b15d609cb1141890c0e013a0ecbcda88b1b"
     },
     "payload/openrouter-claude-proxy/doctor.mjs": {
-      "size": 22783,
-      "sha256": "193d80704a919ae81b0c58a315079855efa29fd536adfa22813c5e37ea50d4a4"
+      "size": 23871,
+      "sha256": "2091ddac40035713217d2cf932243b509ba4b977cee314fdd0d8f466003639e8"
     },
     "payload/openrouter-claude-proxy/model-registry.json": {
       "size": 8390,
@@ -76,16 +116,16 @@
       "sha256": "eefee8c69a75a5f4e27b68609c139b3364b444fcfea926726141afd9cb3b127a"
     },
     "payload/openrouter-claude-proxy/patch-extension.mjs": {
-      "size": 7310,
-      "sha256": "dc74c99d11e79a3a90388a806e682115788876b4bf482c540b7500df377e2c56"
+      "size": 8897,
+      "sha256": "23d30281e63e240f64841f3c7490e26d54280e2b272f1108f42bdf98ba6f897f"
     },
     "payload/openrouter-claude-proxy/safe-update.mjs": {
       "size": 20436,
       "sha256": "1b2cdfb367ca300c035e27a6f06f4ec810c1bca490a6d52a3ea0ce311f467c41"
     },
     "payload/openrouter-claude-proxy/server.mjs": {
-      "size": 32594,
-      "sha256": "2a8ffd39dbb7c6f2c8d278e45fc076d8b7f9fb308d90556a39f02808183110ce"
+      "size": 35400,
+      "sha256": "0c5d2b5bc6dc322c229a102bcbac35e8864c5184dcf5d8d08510aa6b1a17195b"
     },
     "platforms/linux/README.md": {
       "size": 1655,
@@ -208,24 +248,24 @@
       "sha256": "0c4025cd8eb0f299817061c5ecc94798283da76b55cbdd53ee921f66d7a04d16"
     },
     "scripts/install.mjs": {
-      "size": 22147,
-      "sha256": "1b04629cada8158a39983a0a81befbea6e78d75e7250661ff7bf863f78e6714a"
+      "size": 23104,
+      "sha256": "2817f4638c882631243ce956aa584fb823cc22cb483ce221c5d8a660503bd115"
     },
     "scripts/redact-check.mjs": {
       "size": 1539,
       "sha256": "f09c355d92f3b853ac55daf87e5f6b7b562c700d53538e991f5a1f2dc199a6cf"
     },
     "templates/launchagent.plist.template": {
-      "size": 1234,
-      "sha256": "b6259fee394caa1fb36d9c7a088821498f11ad426e0aa0c890783f6e2c2f80e6"
+      "size": 1372,
+      "sha256": "ecd540845a6281ead84814d97c1256266600cb617de787360965f34c48fc29b6"
     },
     "templates/settings.json.template": {
       "size": 1359,
       "sha256": "4e1b62dce5149c466c4ff6333f1a26568fd15ce2754214a81471a7618153993b"
     },
     "templates/vscode-settings.patch.json": {
-      "size": 193,
-      "sha256": "da995d915b122cdf5a3e7815322314fbd5447b3ba30aede08180d34c393fd23b"
+      "size": 267,
+      "sha256": "971e477bcab9302aba000d7155c6cbbf06140a82514dff96931a36c4007f53d8"
     },
     "uninstall.sh": {
       "size": 362,

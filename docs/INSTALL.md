@@ -121,6 +121,27 @@ claude-router tail
 ```
 
 Each request logs model, provider, input/output tokens, cache_read, cost, latency.
+Newer metrics also include finish reason, retry count, and observe-only context advice.
+
+### Use built-in Skills and subagents
+
+The installer adds focused Claude Code Skills and agents:
+
+```sh
+ls ~/.claude/skills
+ls ~/.claude/agents
+```
+
+Useful prompts:
+
+```text
+Use the frontend-design skill and ui-designer agent to improve this landing page.
+Use the frontend-reviewer agent to review the UI before final.
+Use the test-runner agent after these code changes.
+Use the architect agent for the data model tradeoff.
+```
+
+Skills load only when relevant, so long design/review instructions do not sit in every normal turn.
 
 ### Inspect and switch models
 

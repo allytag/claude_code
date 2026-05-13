@@ -22,6 +22,9 @@ const REGISTRY_PATH = process.env.OPENROUTER_PROXY_REGISTRY_PATH || "__HOME__/.c
 const WARN_CONTEXT_TOKENS = Number(process.env.OPENROUTER_PROXY_WARN_CONTEXT_TOKENS || 50_000);
 const WARN_COST_USD = Number(process.env.OPENROUTER_PROXY_WARN_COST_USD || 0.02);
 const LOW_TOKEN_MAX_ESTIMATED_TOKENS = Number(process.env.OPENROUTER_PROXY_LOW_TOKEN_MAX_ESTIMATED_TOKENS || 10_000);
+const RETRY_TRANSIENT = flag("OPENROUTER_PROXY_RETRY_TRANSIENT", true);
+const MAX_RETRIES = Math.max(0, Number(process.env.OPENROUTER_PROXY_MAX_RETRIES || 1));
+const RETRY_STATUS_CODES = new Set([408, 409, 425, 429, 500, 502, 503, 504]);
 
 function flag(name, defaultValue) {
   const raw = process.env[name];
@@ -481,6 +484,17 @@ function budgetWarnings(metrics) {
   return warnings;
 }
 
+function contextAdvice(metrics) {
+  const advice = [];
+  if (metrics.estimatedInputTokens > WARN_CONTEXT_TOKENS) {
+    advice.push("compact-recommended-observe-only");
+  }
+  if (metrics.estimatedInputTokens > WARN_CONTEXT_TOKENS * 2) {
+    advice.push("fresh-session-recommended-observe-only");
+  }
+  return advice;
+}
+
 function strictBudgetBlocked(warnings) {
   if (!STRICT_BUDGET) return false;
   return warnings.includes("large-context-estimate") || warnings.includes("low-token-request-too-large") || warnings.includes("deepseek-selected");
@@ -541,6 +555,10 @@ function absorbUsage(metrics, obj) {
     if (!item || typeof item !== "object") continue;
     if (typeof item.provider === "string") metrics.provider = item.provider;
     if (typeof item.model === "string") metrics.actualModel = item.model;
+    if (typeof item.stop_reason === "string") metrics.finishReason = item.stop_reason;
+    if (typeof item.finish_reason === "string") metrics.finishReason = item.finish_reason;
+    if (typeof item.stopReason === "string") metrics.finishReason = item.stopReason;
+    if (typeof item.finishReason === "string") metrics.finishReason = item.finishReason;
 
     const usage = item.usage && typeof item.usage === "object" ? item.usage : item;
     // Use max-wins for cumulative counters. Streamed events report increasing values; the final
@@ -684,7 +702,11 @@ function writeMetrics(metrics) {
     cachedTokens: metrics.cachedTokens,
     costUsd: metrics.costUsd,
     latencyMs: metrics.latencyMs,
+    finishReason: metrics.finishReason,
+    retryCount: metrics.retryCount,
+    retryReasons: metrics.retryReasons,
     warnings: metrics.warnings,
+    contextAdvice: metrics.contextAdvice,
     promptCache: metrics.promptCache,
     providerPin: metrics.providerPin,
     modelRemap: metrics.modelRemap,
@@ -728,13 +750,52 @@ function newMetrics(req, rawBody) {
     cachedTokens: null,
     costUsd: null,
     latencyMs: null,
+    finishReason: null,
+    retryCount: 0,
+    retryReasons: [],
     warnings: [],
+    contextAdvice: [],
     promptCache: { mode: PROMPT_CACHE, applied: false, reason: "not-json", locations: [] },
     providerPin: { applied: false, reason: PIN_PROVIDER ? "no-observed-provider" : "disabled", provider: null },
     modelRemap: { enabled: null, applied: false, type: "internal-haiku", from: null, to: null, targetRole: null, reason: "not-json" },
     reasoningPolicy: { action: "none", reason: "not-json" },
     responseCache: { enabled: RESPONSE_CACHE, applied: false },
   };
+}
+
+function retryDelayMs(attempt, status) {
+  if (status === 429) return Math.min(2_000, 500 * 2 ** attempt);
+  return Math.min(1_500, 250 * 2 ** attempt);
+}
+
+async function fetchWithTransientRetry(upstreamUrl, options, metrics) {
+  let lastError = null;
+  const maxAttempts = RETRY_TRANSIENT ? MAX_RETRIES + 1 : 1;
+
+  for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
+    try {
+      const response = await fetch(upstreamUrl, options);
+      if (!RETRY_TRANSIENT || attempt >= maxAttempts - 1 || !RETRY_STATUS_CODES.has(response.status)) {
+        return response;
+      }
+      metrics.retryCount += 1;
+      metrics.retryReasons.push(`http-${response.status}`);
+      try {
+        await response.arrayBuffer();
+      } catch {
+        // Best effort drain before retry.
+      }
+      await new Promise((resolve) => setTimeout(resolve, retryDelayMs(attempt, response.status)));
+    } catch (error) {
+      lastError = error;
+      if (!RETRY_TRANSIENT || attempt >= maxAttempts - 1) throw error;
+      metrics.retryCount += 1;
+      metrics.retryReasons.push(`fetch-error:${error?.code || error?.name || "unknown"}`);
+      await new Promise((resolve) => setTimeout(resolve, retryDelayMs(attempt, 0)));
+    }
+  }
+
+  throw lastError || new Error("fetch failed");
 }
 
 async function handle(req, res) {
@@ -751,6 +812,8 @@ async function handle(req, res) {
         remapInternalHaiku: remap.enabled,
         remapInternalHaikuTargetRole: remap.targetRole,
         reasoningPolicy: "strip-unless-registry-allowlisted-and-effort-high",
+        retryTransient: RETRY_TRANSIENT,
+        maxRetries: MAX_RETRIES,
       },
     }));
     return;
@@ -815,6 +878,7 @@ async function handle(req, res) {
   if (requestBody) headers.set("content-length", String(requestBody.length));
 
   metrics.warnings = budgetWarnings(metrics);
+  metrics.contextAdvice = contextAdvice(metrics);
   if (metrics.warnings.length > 0) log(`[budget] ${metrics.requestId} ${metrics.warnings.join(",")} model=${metrics.selectedModel} est_tokens=${metrics.estimatedInputTokens}`);
 
   if (strictBudgetBlocked(metrics.warnings)) {
@@ -831,7 +895,7 @@ async function handle(req, res) {
     return;
   }
 
-  const upstreamResponse = await fetch(upstreamUrl, {
+  const upstreamResponse = await fetchWithTransientRetry(upstreamUrl, {
     method: req.method,
     headers,
     body: requestBody,
@@ -879,6 +943,15 @@ setInterval(patchExtensions, PATCH_INTERVAL_MS).unref();
 
 const server = http.createServer((req, res) => {
   handle(req, res).catch((error) => {
+    log(`[proxy] request failed: ${error?.message || String(error)}`);
+    if (res.headersSent || res.writableEnded) {
+      try {
+        res.end();
+      } catch {
+        // Response is already closed.
+      }
+      return;
+    }
     res.writeHead(502, { "content-type": "application/json" });
     res.end(JSON.stringify({ error: { message: error.message, type: "proxy_error" } }));
   });
