@@ -1,6 +1,6 @@
 {
   "ltsVersion": "2026.05.13-1",
-  "generatedAt": "2026-05-19T10:28:54.092Z",
+  "generatedAt": "2026-05-19T13:12:42.756Z",
   "platform": "macos-arm64-lts-linux-windows-beta",
   "nodeVersionMin": "20.0.0",
   "claudeCliMin": "2.1.131",
@@ -128,12 +128,12 @@
       "sha256": "4c312383ea2d7ca19005d7cab6eb2549f1b30bbe2f8a3bcd8f2baabdb6ab7705"
     },
     "payload/claude-assets/skills/agent-bootstrap/SKILL.md": {
-      "size": 1931,
-      "sha256": "4f00a11dd3d7c44996770a64564a5ae6d26697757a08eb005ec647f5e6877196"
+      "size": 2285,
+      "sha256": "702c2f25e53e2383f3dfc49a5b448640ad727853133e3f8613474fae6392336d"
     },
     "payload/claude-assets/skills/api-contract/SKILL.md": {
-      "size": 1198,
-      "sha256": "b9154ff8ca7bdc10abba2fa679ec1e0c0360a2720cce6ebbab4d8dbbaa00e7ad"
+      "size": 2729,
+      "sha256": "9b98ac1ded6f676ce4a73037e6baf7bdb17cc307336fbe2401a7b0683091d93a"
     },
     "payload/claude-assets/skills/code-review/SKILL.md": {
       "size": 732,
@@ -152,16 +152,16 @@
       "sha256": "c33597d462e45a4f01192c69c0f92809caa28e29c56768e6320f7ff1cba80a51"
     },
     "payload/claude-assets/skills/performance-pass/SKILL.md": {
-      "size": 1020,
-      "sha256": "4c795c00ce6c07b3574f0d611852029a5dfe79ddb90d152627296b5b70c16f39"
+      "size": 3081,
+      "sha256": "81ad9a9fdd9a322033af9333f4b10f7b3a8d2781758ba7eaddeedccaba6cba9e"
     },
     "payload/claude-assets/skills/premium-ui/SKILL.md": {
-      "size": 1774,
-      "sha256": "88f1e7574980ba10ff7099e808ce3ad04f8368ba2ef52e914cfda4fb948ce9e0"
+      "size": 2910,
+      "sha256": "2a9f2a1dff402a3dba8e3959bb1d807504a60104d234c74bd5902871f8bc7ce1"
     },
     "payload/claude-assets/skills/project-memory/SKILL.md": {
-      "size": 2176,
-      "sha256": "e9f88568d0fea7f46fdb243f6dc7471dc6a4764738cd82ab439f38b050d3530c"
+      "size": 3179,
+      "sha256": "8295bb8340a5a8ef3bad0c366a5734d50fa9be0a9d3bb9b819fdf1e88e20a7ef"
     },
     "payload/claude-assets/skills/saas-architecture/SKILL.md": {
       "size": 996,
@@ -184,8 +184,8 @@
       "sha256": "8145c17570ecb19adea11c74c04106e96c900f4053ab1044afeaf9e90b38a60d"
     },
     "payload/claude-assets/skills/tool-coach/SKILL.md": {
-      "size": 1995,
-      "sha256": "2734cbfefb6816414a828dab0e7a031f2522ccafc4c5dfe56673fd1836f13d36"
+      "size": 2481,
+      "sha256": "09a852c371f9405d7edee1c2406ac1dc83560a2414e0ad482109a9c10779ae7d"
     },
     "payload/claude-assets/statusline/openrouter-lts-statusline.mjs": {
       "size": 2583,

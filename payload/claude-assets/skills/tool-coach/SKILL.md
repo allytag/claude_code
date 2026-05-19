@@ -21,6 +21,10 @@ Use this skill to choose tools deliberately and avoid wasteful or unsafe loops.
 9. For UI work, run Premium UI review before final.
 10. For release-risk work, call Test Strategy and Security Hardening.
 
+## Tool and MCP Selection
+
+When MCP servers are available, prefer the official/current server for the target service over recreating the integration through ad hoc web fetches. Use MCP for service-native context such as GitHub, databases, observability, or issue trackers when it is authenticated and relevant. Do not use MCP for local filesystem work that the current host tools already handle better. If MCP auth is missing, state that clearly and continue with safe local evidence.
+
 ## Tool Names
 
 This LTS uses `Bash` for search because some Claude Code sessions do not expose direct `Grep`/`Glob` tools. For text search, call `Bash` with `rg` or command-line `grep`. For file discovery, call `Bash` with `rg --files` or `find`. Never emit `tool_use.name = "Grep"`, `tool_use.name = "Glob"`, `tool_use.name = "grep"`, or `tool_use.name = "glob"`.

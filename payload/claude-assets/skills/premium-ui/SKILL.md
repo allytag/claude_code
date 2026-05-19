@@ -17,6 +17,17 @@ Before coding, choose:
 - Layout strategy: hero hierarchy, content density, scan path, interaction priority.
 - State strategy: loading, empty, error, success, disabled, long content.
 
+## Premium Interface Design
+
+- Layout: create a deliberate composition, not a stacked template. Use asymmetric hero structure, strong section rhythm, and clear scan paths when appropriate.
+- Typography: choose expressive hierarchy with intentional display/body contrast, line height, max width, and numeric/data styling.
+- Color: define a focused palette with semantic tokens. Use gradients, texture, or depth only when they support the product mood.
+- SaaS dashboards: prioritize decision speed. Surface primary metrics, deltas, filters, empty states, and drill-down paths without visual clutter.
+- Landing pages: make the promise, proof, and conversion path visible above the fold; support it with credible product-specific details.
+- Mobile UX: design thumb-safe actions, collapsed navigation, readable tables/cards, and no horizontal overflow.
+- Motion: use transitions to explain hierarchy, loading, or state changes. Respect reduced motion and avoid decorative noise.
+- Screenshot QA: inspect the rendered page at desktop and mobile widths for alignment, contrast, spacing, overflow, broken states, and generic-looking sections.
+
 ## Build Rules
 
 1. Avoid interchangeable AI UI. No random purple gradients, generic cards, or meaningless icons.
