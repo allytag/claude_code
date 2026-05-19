@@ -1,7 +1,7 @@
 ---
 name: Debug Loop
 description: Structured debugging workflow. Use when errors, failing tests, broken builds, unexpected model/provider failures, runtime crashes, or flaky behavior appear.
-allowed-tools: Read, Grep, Glob, Bash, Edit, MultiEdit
+allowed-tools: Read, Bash, Edit, MultiEdit
 ---
 
 # Debug Loop

@@ -9,8 +9,6 @@ const BACKUP_DIR = path.join(HOME, ".claude", "skill-backups");
 
 const ALLOWED_TOOLS = new Set([
   "Read",
-  "Grep",
-  "Glob",
   "Bash",
   "Edit",
   "MultiEdit",

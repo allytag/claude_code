@@ -1,7 +1,7 @@
 ---
 name: release-checker
 description: Final release gate. Use before shipping to check tests, UX states, security risk, performance risk, docs/env/migration gaps, and rollback readiness.
-tools: Read, Grep, Glob, Bash
+tools: Read, Bash
 model: sonnet
 skills: test-strategy,security-hardening,performance-pass,tool-coach
 color: green

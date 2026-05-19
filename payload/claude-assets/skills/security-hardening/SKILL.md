@@ -1,7 +1,7 @@
 ---
 name: Security Hardening
 description: Use for auth, payments, secrets, file upload, webhooks, admin actions, database access, RLS, user-generated content, external APIs, and release review.
-allowed-tools: Read, Grep, Glob, Bash, Edit, MultiEdit, Write
+allowed-tools: Read, Bash, Edit, MultiEdit, Write
 ---
 
 # Security Hardening

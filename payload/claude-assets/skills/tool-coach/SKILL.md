@@ -1,7 +1,7 @@
 ---
 name: Tool Coach
 description: Use automatically for Claude Code work involving files, tools, bash, edits, tests, long commands, failed tool calls, or unfamiliar repos. Improves tool choice, prevents loops, and keeps work high-quality without adding broad context.
-allowed-tools: Read, Grep, Glob, Bash
+allowed-tools: Read, Bash
 ---
 
 # Tool Coach
@@ -10,16 +10,20 @@ Use this skill to choose tools deliberately and avoid wasteful or unsafe loops.
 
 ## Tool Discipline
 
-1. Use `Glob`/`Grep` before broad reads.
+1. Use `Bash` with `rg`, `rg --files`, or `find` before broad reads.
 2. Use `Read` before `Edit`/`MultiEdit`.
 3. Use `Edit` for small precise changes; `MultiEdit` for several edits in one file; `Write` only for new files or full rewrites.
 4. Use `Bash` for targeted verification, not blind full-suite runs unless needed.
-5. Never paste huge logs. Use `tail`, filters, or targeted grep.
+5. Never paste huge logs. Use `tail`, filters, or targeted `rg`/`grep`.
 6. If a command fails twice, stop and diagnose root cause. Do not loop.
 7. For long commands, state command, expected signal, timeout/log path, and next check.
 8. For unfamiliar repo work, call or follow Context Intelligence first.
 9. For UI work, run Premium UI review before final.
 10. For release-risk work, call Test Strategy and Security Hardening.
+
+## Tool Names
+
+This LTS uses `Bash` for search because some Claude Code sessions do not expose direct `Grep`/`Glob` tools. For text search, call `Bash` with `rg` or command-line `grep`. For file discovery, call `Bash` with `rg --files` or `find`. Never emit `tool_use.name = "Grep"`, `tool_use.name = "Glob"`, `tool_use.name = "grep"`, or `tool_use.name = "glob"`.
 
 ## Long Command Pattern
 

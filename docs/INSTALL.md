@@ -145,9 +145,12 @@ Use the architect agent for the data model tradeoff.
 Use the security-reviewer agent before release.
 Use /tool-coach when tool choice is unclear.
 Use /skill-forge when the current skills are not enough.
+Use Project Memory for long projects, handoffs, or context compaction.
+Use Agent Bootstrap only when setting up or repairing AGENTS.md / CLAUDE.md.
 ```
 
 Skills load only when relevant, so long design/review instructions do not sit in every normal turn. Slash commands give explicit workflows when you want tight control.
+Project Memory and Agent Bootstrap are intentionally narrow. They avoid monolithic always-on prompt packs and only create repo memory/instruction files when useful.
 
 The statusline shows current OpenRouter role/model, provider, last cost, tokens, cache, finish reason, retry count, and compact hints. It is local-only and does not call any model.
 

@@ -1,7 +1,7 @@
 ---
 description: Ship feature with plan, implementation, tests, and final verification.
 argument-hint: [feature]
-allowed-tools: Read, Grep, Glob, Bash, Edit, MultiEdit, Write
+allowed-tools: Read, Bash, Edit, MultiEdit, Write
 ---
 
 # Ship Feature

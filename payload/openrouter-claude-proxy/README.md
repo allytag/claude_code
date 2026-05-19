@@ -31,6 +31,7 @@ claude-low
 - Remap only verified tiny internal Claude Code Haiku background calls to the registry `cheapFull` role.
 - Record finish reasons, retry count, context advice, provider, tokens, and cost.
 - Retry transient provider/network failures once by default.
+- Normalize exact known lowercase tool-name aliases when direct tools exist, while bundled skills prefer `Bash` with `rg`/`find` because some Claude Code sessions do not expose direct `Grep`/`Glob`.
 - Report installed Skills, agents, slash commands, and statusline through doctor.
 - Guard skill drafts through `skill-guard.mjs` before optional promotion.
 

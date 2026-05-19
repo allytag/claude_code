@@ -1,7 +1,7 @@
 ---
 name: Skill Evolution
 description: Use when current skills/agents are insufficient, output quality was weak, user says a workflow failed, repeated errors happen, or a new reusable workflow should be added. Drafts improvements safely into skill inbox; never silently installs them.
-allowed-tools: Read, Grep, Glob, Bash, Write
+allowed-tools: Read, Bash, Write
 ---
 
 # Skill Evolution

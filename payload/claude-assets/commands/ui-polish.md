@@ -1,7 +1,7 @@
 ---
 description: Upgrade UI quality with premium design pass and verification.
 argument-hint: [page/component/user-flow]
-allowed-tools: Read, Grep, Glob, Bash, Edit, MultiEdit, Write
+allowed-tools: Read, Bash, Edit, MultiEdit, Write
 ---
 
 # UI Polish

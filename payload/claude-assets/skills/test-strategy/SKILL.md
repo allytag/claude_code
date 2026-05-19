@@ -1,7 +1,7 @@
 ---
 name: Test Strategy
 description: Use when adding features, fixing bugs, preparing release, refactoring, or when confidence matters. Designs and runs minimal high-value tests without wasting time.
-allowed-tools: Read, Grep, Glob, Bash, Edit, MultiEdit, Write
+allowed-tools: Read, Bash, Edit, MultiEdit, Write
 ---
 
 # Test Strategy
@@ -15,7 +15,8 @@ Use this skill to get confidence with minimal test cost.
 3. Add one regression test for the bug when possible.
 4. Prefer small deterministic tests over broad brittle suites.
 5. Run targeted tests before full suite.
-6. If tests cannot run, state exact blocker and safest manual verification.
+6. Check impacted parent flow, adjacent state, and likely caller/component.
+7. If tests cannot run, state exact blocker and safest manual verification.
 
 ## Coverage Targets
 
@@ -24,6 +25,8 @@ Use this skill to get confidence with minimal test cost.
 - Boundary values.
 - Auth/permission edge when security relevant.
 - UI state: loading, empty, error, success.
+- API state: validation failure, auth failure, provider failure, retry/idempotency when relevant.
+- Diff review: accidental behavior change, duplicated logic, hidden weakening.
 
 ## Final Verification
 

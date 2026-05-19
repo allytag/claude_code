@@ -1,7 +1,7 @@
 ---
 name: Code Review
 description: Senior code review workflow. Use when reviewing changes, checking quality before commit, evaluating generated code, or finding bugs/security risks.
-allowed-tools: Read, Grep, Glob, Bash
+allowed-tools: Read, Bash
 ---
 
 # Code Review

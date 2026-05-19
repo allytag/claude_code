@@ -1,7 +1,7 @@
 ---
 description: Security-focused audit for auth, payments, secrets, APIs, and release risk.
 argument-hint: [scope]
-allowed-tools: Read, Grep, Glob, Bash(git status:*), Bash(rg:*)
+allowed-tools: Read, Bash(git status:*), Bash(rg:*)
 ---
 
 # Security Audit

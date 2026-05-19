@@ -57,12 +57,14 @@ const WRAPPER_FILES = [
 ];
 
 const SKILL_DIRS = [
+  "agent-bootstrap",
   "frontend-design",
   "ship-feature",
   "debug-loop",
   "code-review",
   "saas-architecture",
   "context-intelligence",
+  "project-memory",
   "premium-ui",
   "api-contract",
   "test-strategy",

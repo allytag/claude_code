@@ -1,7 +1,7 @@
 ---
 description: Run final quality, security, test, and UX release check.
 argument-hint: [scope]
-allowed-tools: Read, Grep, Glob, Bash
+allowed-tools: Read, Bash
 ---
 
 # Release Check

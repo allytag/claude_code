@@ -1,7 +1,7 @@
 ---
 description: Draft or validate a new reusable skill safely in the skill inbox.
 argument-hint: [workflow gap / failed behavior / desired skill]
-allowed-tools: Read, Grep, Glob, Bash, Write
+allowed-tools: Read, Bash, Write
 ---
 
 # Skill Forge

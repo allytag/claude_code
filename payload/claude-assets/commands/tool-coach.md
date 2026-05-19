@@ -1,7 +1,7 @@
 ---
 description: Choose best Claude Code tools and verification path before work.
 argument-hint: [task]
-allowed-tools: Read, Grep, Glob, Bash
+allowed-tools: Read, Bash
 ---
 
 # Tool Coach

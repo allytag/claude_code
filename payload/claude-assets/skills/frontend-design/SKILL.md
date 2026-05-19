@@ -1,7 +1,7 @@
 ---
 name: Frontend Design
 description: Strong frontend visual-design workflow. Use when building or improving UI, landing pages, dashboards, SaaS screens, responsive layouts, typography, color systems, spacing, visual hierarchy, empty states, or design polish.
-allowed-tools: Read, Grep, Glob, Bash, Edit, MultiEdit, Write
+allowed-tools: Read, Bash, Edit, MultiEdit, Write
 ---
 
 # Frontend Design

@@ -1,7 +1,7 @@
 ---
 description: Build a compact implementation plan with relevant context only.
 argument-hint: [task]
-allowed-tools: Read, Grep, Glob, Bash(git status:*), Bash(find:*), Bash(rg:*)
+allowed-tools: Read, Bash(git status:*), Bash(find:*), Bash(rg:*)
 ---
 
 # Smart Plan

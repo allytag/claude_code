@@ -1,7 +1,7 @@
 ---
 name: Performance Pass
 description: Use for slow pages, large bundles, slow APIs, database performance, caching, rendering jank, long sessions, and production-readiness polish.
-allowed-tools: Read, Grep, Glob, Bash, Edit, MultiEdit, Write
+allowed-tools: Read, Bash, Edit, MultiEdit, Write
 ---
 
 # Performance Pass

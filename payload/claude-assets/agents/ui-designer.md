@@ -1,7 +1,7 @@
 ---
 name: ui-designer
 description: UI design specialist. Use proactively for visual direction, landing pages, SaaS screens, layout systems, typography, color, spacing, interaction polish, and design critique before or after frontend implementation.
-tools: Read, Grep, Glob
+tools: Read, Bash
 model: sonnet
 skills: premium-ui,frontend-design
 color: pink

@@ -1,7 +1,7 @@
 ---
 description: Diagnose and fix bug with evidence-first loop.
 argument-hint: [error/bug]
-allowed-tools: Read, Grep, Glob, Bash, Edit, MultiEdit, Write
+allowed-tools: Read, Bash, Edit, MultiEdit, Write
 ---
 
 # Debug Loop

@@ -1,7 +1,7 @@
 ---
 name: security-reviewer
 description: Security reviewer. Use for auth, payments, secrets, API boundaries, admin flows, file uploads, webhooks, and release risk review.
-tools: Read, Grep, Glob
+tools: Read, Bash
 model: sonnet
 skills: security-hardening,tool-coach
 color: red

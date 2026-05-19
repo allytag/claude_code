@@ -39,7 +39,7 @@ sequenceDiagram
 | **Patcher** | `~/.claude/openrouter-claude-proxy/patch-extension.mjs` | Hides `redacted_thinking` UI errors, forces extension thinking off, hides extension update command. Re-applies on extension updates. |
 | **Doctor** | `~/.claude/openrouter-claude-proxy/doctor.mjs` | Read-only diagnosis. Drift, cache readiness, last metrics. |
 | **LaunchAgent** | `~/Library/LaunchAgents/com.codex.openrouter-claude-proxy.plist` | Keeps proxy running, re-patches extension every 60 s. |
-| **Skills** | `~/.claude/skills/` | Focused workflows loaded only when relevant: context intelligence, premium UI, API contracts, testing, security, performance, tool coaching, skill evolution, shipping, debug, review, SaaS architecture. |
+| **Skills** | `~/.claude/skills/` | Focused workflows loaded only when relevant: context intelligence, premium UI, API contracts, testing, security, performance, tool coaching, skill evolution, shipping, debug, review, SaaS architecture, project memory, and agent bootstrap. |
 | **Subagents** | `~/.claude/agents/` | Specialized agents for context scouting, UI design/implementation, frontend review, tests, architecture, security, performance, release checks, and research. |
 | **Slash commands** | `~/.claude/commands/` | Explicit reusable workflows: `/smart-plan`, `/context-scout`, `/ui-polish`, `/ship-feature`, `/debug-loop`, `/release-check`, `/security-audit`, `/skill-forge`, `/tool-coach`. |
 | **Skill guard** | `~/.claude/openrouter-claude-proxy/skill-guard.mjs` | Validates skill drafts for size, required frontmatter, allowed tools, secrets, private paths, dangerous commands, and unsafe trigger text. Promotion is dry-run unless `--apply`. |

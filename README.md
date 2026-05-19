@@ -60,7 +60,7 @@ That's it. Claude Code now runs on your chosen OpenRouter model with full tool a
 <tr><td><b>Internal Haiku remap</b></td><td>Claude Code's silent background Haiku calls re-routed to your <code>cheapFull</code> model. Safety-gated (no tools, ≤2 messages).</td></tr>
 <tr><td><b>Reasoning policy</b></td><td>Reasoning passes through only for registry-allowlisted models on <code>/effort high</code>. Others stripped to prevent surprise cost.</td></tr>
 <tr><td><b>Failure handling</b></td><td>Logs finish reasons and retries transient provider failures once (<code>429</code>, <code>502</code>, timeout/fetch errors) before surfacing failure.</td></tr>
-<tr><td><b>Power Pack</b></td><td>Installs focused Claude Code Skills, agents, and slash commands for context scouting, premium UI, SaaS architecture, API contracts, testing, security, performance, tool coaching, debugging, and release checks.</td></tr>
+<tr><td><b>Power Pack</b></td><td>Installs focused Claude Code Skills, agents, and slash commands for context scouting, premium UI, SaaS architecture, API contracts, testing, security, performance, project memory, agent bootstrap, tool coaching, debugging, and release checks.</td></tr>
 <tr><td><b>Skill evolution guard</b></td><td>New skills are drafted into <code>~/.claude/skill-inbox</code>, checked by <code>skill-guard.mjs</code>, and promoted only with explicit <code>--apply</code>.</td></tr>
 <tr><td><b>Statusline</b></td><td>Shows active OpenRouter role/model, provider, last cost, tokens, cache, finish reason, retry count, and compact hints without model calls.</td></tr>
 <tr><td><b>Doctor + cleanup</b></td><td>Health, drift detection, cache readiness, stale-data cleanup. Caveman/Desktop/projects protected.</td></tr>

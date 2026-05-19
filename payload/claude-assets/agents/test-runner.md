@@ -1,7 +1,7 @@
 ---
 name: test-runner
 description: Test and validation specialist. Use proactively after code changes to run relevant checks, diagnose failures, and report minimal fixes. Does not perform broad refactors.
-tools: Read, Grep, Glob, Bash
+tools: Read, Bash
 model: haiku
 skills: test-strategy,debug-loop,tool-coach
 color: green

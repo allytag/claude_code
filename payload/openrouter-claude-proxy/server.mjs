@@ -25,6 +25,22 @@ const LOW_TOKEN_MAX_ESTIMATED_TOKENS = Number(process.env.OPENROUTER_PROXY_LOW_T
 const RETRY_TRANSIENT = flag("OPENROUTER_PROXY_RETRY_TRANSIENT", true);
 const MAX_RETRIES = Math.max(0, Number(process.env.OPENROUTER_PROXY_MAX_RETRIES || 1));
 const RETRY_STATUS_CODES = new Set([408, 409, 425, 429, 500, 502, 503, 504]);
+const TOOL_NAME_ALIASES = new Map([
+  ["grep", "Grep"],
+  ["glob", "Glob"],
+  ["read", "Read"],
+  ["bash", "Bash"],
+  ["edit", "Edit"],
+  ["multiedit", "MultiEdit"],
+  ["multi_edit", "MultiEdit"],
+  ["write", "Write"],
+  ["todowrite", "TodoWrite"],
+  ["todo_write", "TodoWrite"],
+  ["webfetch", "WebFetch"],
+  ["web_fetch", "WebFetch"],
+  ["websearch", "WebSearch"],
+  ["web_search", "WebSearch"],
+]);
 
 function flag(name, defaultValue) {
   const raw = process.env[name];
@@ -229,6 +245,113 @@ function describeBody(body, rawBytes) {
     systemChars,
     toolCount: tools.length,
     toolSchemaBytes: byteLength(tools),
+  };
+}
+
+function availableToolNames(body) {
+  const tools = Array.isArray(body?.tools) ? body.tools : [];
+  return new Set(tools.map((tool) => tool?.name).filter((name) => typeof name === "string" && name.length > 0));
+}
+
+function shellQuote(value) {
+  return `'${String(value ?? "").replace(/'/g, "'\\''")}'`;
+}
+
+function knownToolSet(metrics) {
+  return metrics?.availableToolNames instanceof Set && metrics.availableToolNames.size > 0;
+}
+
+function toolIsAvailable(metrics, name) {
+  if (!knownToolSet(metrics)) return true;
+  return metrics.availableToolNames.has(name);
+}
+
+function canonicalSearchToolName(name) {
+  if (typeof name !== "string") return null;
+  const lower = name.trim().toLowerCase();
+  if (lower === "grep") return "Grep";
+  if (lower === "glob") return "Glob";
+  return null;
+}
+
+function shouldFallbackSearchTool(name, metrics) {
+  const canonical = canonicalSearchToolName(name);
+  if (!canonical) return null;
+  if (toolIsAvailable(metrics, canonical)) return null;
+  if (!toolIsAvailable(metrics, "Bash")) return null;
+  return canonical;
+}
+
+function booleanInput(value) {
+  return value === true || value === "true" || value === "1" || value === 1;
+}
+
+function positiveInteger(value, fallback, max) {
+  const parsed = Number(value);
+  if (!Number.isInteger(parsed) || parsed <= 0) return fallback;
+  return Math.min(parsed, max);
+}
+
+function readOnlySearchCommand(originalName, input) {
+  if (!input || typeof input !== "object") return null;
+  const path = input.path || input.cwd || ".";
+
+  if (originalName === "Glob") {
+    const pattern = input.pattern || input.glob;
+    if (!pattern || typeof pattern !== "string") return null;
+    const limit = positiveInteger(input.limit ?? input.head_limit, 500, 2_000);
+    return `rg --files -g ${shellQuote(pattern)} ${shellQuote(path)} | head -n ${limit}`;
+  }
+
+  if (originalName === "Grep") {
+    const pattern = input.pattern || input.query || input.regex;
+    if (!pattern || typeof pattern !== "string") return null;
+
+    const args = ["rg", "--color=never"];
+    const outputMode = input.output_mode || input.outputMode || "content";
+    if (booleanInput(input["-i"]) || booleanInput(input.ignore_case) || booleanInput(input.ignoreCase)) args.push("--ignore-case");
+    if (outputMode === "files_with_matches" || outputMode === "files") {
+      args.push("--files-with-matches");
+    } else if (outputMode === "count") {
+      args.push("--count");
+    } else {
+      args.push("--line-number", "--no-heading");
+    }
+    if (input.include && typeof input.include === "string") args.push("-g", shellQuote(input.include));
+    args.push("--", shellQuote(pattern), shellQuote(path));
+
+    let command = args.join(" ");
+    if (outputMode !== "files_with_matches" && outputMode !== "files" && outputMode !== "count") {
+      const limit = positiveInteger(input.limit ?? input.head_limit, 300, 2_000);
+      command = `${command} | head -n ${limit}`;
+    }
+    return command;
+  }
+
+  return null;
+}
+
+function searchToolBashFallback(toolUse, metrics, options = {}) {
+  if (!toolUse || typeof toolUse !== "object" || toolUse.type !== "tool_use") return null;
+  const originalName = shouldFallbackSearchTool(toolUse.name, metrics);
+  if (!originalName) return null;
+  const command = readOnlySearchCommand(originalName, toolUse.input);
+  if (!command) return null;
+
+  metrics.toolNameAliases.push({
+    from: toolUse.name,
+    to: "Bash",
+    reason: `${originalName.toLowerCase()}-tool-unavailable-readonly-bash-fallback`,
+    streamed: options.streamed === true,
+  });
+
+  return {
+    ...toolUse,
+    name: "Bash",
+    input: {
+      command,
+      description: `${originalName} fallback: search files with rg through Bash`,
+    },
   };
 }
 
@@ -504,6 +627,13 @@ function isHiddenBlock(block) {
   return block && typeof block === "object" && HIDDEN_CONTENT_TYPES.has(block.type);
 }
 
+function toolNameAlias(name, metrics) {
+  if (typeof name !== "string") return null;
+  const alias = TOOL_NAME_ALIASES.get(name.trim().toLowerCase());
+  if (!alias || alias === name) return null;
+  return alias;
+}
+
 function sanitizeJson(value, metrics) {
   if (Array.isArray(value)) {
     return value.filter((item) => !isHiddenBlock(item)).map((item) => sanitizeJson(item, metrics));
@@ -515,7 +645,11 @@ function sanitizeJson(value, metrics) {
     return null;
   }
 
+  const bashFallback = searchToolBashFallback(value, metrics);
+  if (bashFallback) return sanitizeJson(bashFallback, metrics);
+
   const next = {};
+  const isToolUse = value.type === "tool_use";
   for (const [key, child] of Object.entries(value)) {
     if (key === "content" && Array.isArray(child)) {
       const filtered = child.filter((item) => {
@@ -527,7 +661,14 @@ function sanitizeJson(value, metrics) {
       continue;
     }
 
-    const clean = sanitizeJson(child, metrics);
+    let clean = sanitizeJson(child, metrics);
+    if (isToolUse && key === "name") {
+      const alias = toolNameAlias(child, metrics);
+      if (alias) {
+        clean = alias;
+        metrics.toolNameAliases.push({ from: child, to: alias });
+      }
+    }
     if (clean !== null) next[key] = clean;
   }
   return next;
@@ -614,7 +755,76 @@ function shouldDropSseEvent(event, hiddenIndexes, metrics) {
   return false;
 }
 
-function sanitizeSseBlock(block, hiddenIndexes, metrics) {
+function mergeStreamedToolInput(initialInput, partialJson) {
+  const base = initialInput && typeof initialInput === "object" && !Array.isArray(initialInput) ? initialInput : {};
+  if (!partialJson) return { ...base };
+  try {
+    const parsed = JSON.parse(partialJson);
+    if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) return { ...base, ...parsed };
+  } catch {
+    // Fall through to base input; the replay path handles malformed streamed JSON.
+  }
+  return { ...base };
+}
+
+function joinSseBlocks(blocks) {
+  const lines = [];
+  blocks.forEach((sseBlock, index) => {
+    if (index > 0) lines.push("");
+    lines.push(...sseBlock);
+  });
+  return lines;
+}
+
+function sseLinesForEvent(event) {
+  return [`event: ${event.type || "message"}`, `data: ${JSON.stringify(event)}`];
+}
+
+function maybeBufferSearchToolFallback(event, block, fallbackToolStreams, metrics) {
+  const index = event.index;
+
+  if (event.type === "content_block_start" && event.content_block?.type === "tool_use") {
+    const originalName = shouldFallbackSearchTool(event.content_block.name, metrics);
+    if (!originalName) return undefined;
+    if (!Number.isInteger(index)) return undefined;
+
+    fallbackToolStreams.set(index, {
+      startEvent: event,
+      startBlock: event.content_block,
+      originalName,
+      partialJson: "",
+      originalBlocks: [[...block]],
+    });
+    return null;
+  }
+
+  const state = Number.isInteger(index) ? fallbackToolStreams.get(index) : null;
+  if (!state) return undefined;
+
+  state.originalBlocks.push([...block]);
+  if (event.type === "content_block_delta" && event.delta?.type === "input_json_delta") {
+    state.partialJson += event.delta.partial_json || "";
+    return null;
+  }
+
+  if (event.type !== "content_block_stop") return null;
+
+  fallbackToolStreams.delete(index);
+  const input = mergeStreamedToolInput(state.startBlock.input, state.partialJson);
+  const fallback = searchToolBashFallback({ ...state.startBlock, input }, metrics, { streamed: true });
+  if (!fallback) return joinSseBlocks(state.originalBlocks);
+
+  const startEvent = {
+    ...state.startEvent,
+    content_block: fallback,
+  };
+  return joinSseBlocks([
+    sseLinesForEvent(sanitizeJson(startEvent, metrics)),
+    sseLinesForEvent(sanitizeJson(event, metrics)),
+  ]);
+}
+
+function sanitizeSseBlock(block, hiddenIndexes, fallbackToolStreams, metrics) {
   if (block.length === 0) return [];
 
   const dataLines = block.filter((line) => line.startsWith("data:"));
@@ -625,6 +835,8 @@ function sanitizeSseBlock(block, hiddenIndexes, metrics) {
 
   try {
     const event = JSON.parse(payload);
+    const fallbackLines = maybeBufferSearchToolFallback(event, block, fallbackToolStreams, metrics);
+    if (fallbackLines !== undefined) return fallbackLines;
     if (shouldDropSseEvent(event, hiddenIndexes, metrics)) return null;
     const cleanData = `data: ${JSON.stringify(sanitizeJson(event, metrics))}`;
     return block.filter((line) => !line.startsWith("data:")).concat(cleanData);
@@ -635,6 +847,7 @@ function sanitizeSseBlock(block, hiddenIndexes, metrics) {
 
 async function streamSanitizedSse(upstreamResponse, res, metrics) {
   const hiddenIndexes = new Set();
+  const fallbackToolStreams = new Map();
   const decoder = new TextDecoder();
   let pending = "";
   let block = [];
@@ -646,7 +859,7 @@ async function streamSanitizedSse(upstreamResponse, res, metrics) {
 
     for (const line of lines) {
       if (line === "") {
-        const clean = sanitizeSseBlock(block, hiddenIndexes, metrics);
+        const clean = sanitizeSseBlock(block, hiddenIndexes, fallbackToolStreams, metrics);
         if (clean !== null) res.write(`${clean.join("\n")}\n\n`);
         block = [];
       } else {
@@ -657,7 +870,7 @@ async function streamSanitizedSse(upstreamResponse, res, metrics) {
 
   if (pending) block.push(pending);
   if (block.length > 0) {
-    const clean = sanitizeSseBlock(block, hiddenIndexes, metrics);
+    const clean = sanitizeSseBlock(block, hiddenIndexes, fallbackToolStreams, metrics);
     if (clean !== null) res.write(`${clean.join("\n")}\n\n`);
   }
 
@@ -712,6 +925,7 @@ function writeMetrics(metrics) {
     modelRemap: metrics.modelRemap,
     reasoningPolicy: metrics.reasoningPolicy,
     responseCache: metrics.responseCache,
+    toolNameAliases: metrics.toolNameAliases,
   };
 
   try {
@@ -760,6 +974,8 @@ function newMetrics(req, rawBody) {
     modelRemap: { enabled: null, applied: false, type: "internal-haiku", from: null, to: null, targetRole: null, reason: "not-json" },
     reasoningPolicy: { action: "none", reason: "not-json" },
     responseCache: { enabled: RESPONSE_CACHE, applied: false },
+    availableToolNames: new Set(),
+    toolNameAliases: [],
   };
 }
 
@@ -815,6 +1031,8 @@ async function handle(req, res) {
         reasoningPolicy: "strip-unless-registry-allowlisted-and-effort-high",
         retryTransient: RETRY_TRANSIENT,
         maxRetries: MAX_RETRIES,
+        toolNameAliasNormalization: true,
+        searchToolBashFallback: true,
       },
     }));
     return;
@@ -859,6 +1077,7 @@ async function handle(req, res) {
       applyInternalHaikuRemapIfSafe(body, metrics);
       applyPromptCacheIfSafe(body, metrics);
       applyProviderPinIfSafe(body, metrics);
+      metrics.availableToolNames = availableToolNames(body);
       Object.assign(metrics, describeBody(body, byteLength(body)));
       requestBody = Buffer.from(JSON.stringify(body));
     } else {

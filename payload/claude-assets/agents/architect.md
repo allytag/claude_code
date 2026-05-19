@@ -1,7 +1,7 @@
 ---
 name: architect
 description: Architecture specialist for hard design decisions, deep debugging strategy, data model tradeoffs, and large project planning. Use only when architecture or deep reasoning is explicitly needed.
-tools: Read, Grep, Glob
+tools: Read, Bash
 model: opus
 effort: high
 skills: saas-architecture,api-contract,context-intelligence,tool-coach

@@ -1,7 +1,7 @@
 ---
 name: performance-reviewer
 description: Performance reviewer. Use for slow pages, expensive APIs, large bundles, database query risk, caching, and production-readiness checks.
-tools: Read, Grep, Glob, Bash
+tools: Read, Bash
 model: sonnet
 skills: performance-pass,tool-coach
 color: yellow

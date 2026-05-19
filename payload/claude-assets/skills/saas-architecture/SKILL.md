@@ -1,7 +1,7 @@
 ---
 name: SaaS Architecture
 description: Production SaaS architecture workflow. Use when designing full-stack products, auth, billing, dashboards, admin panels, multi-tenant systems, APIs, databases, queues, deployment, or scaling plans.
-allowed-tools: Read, Grep, Glob, Bash, Edit, MultiEdit, Write
+allowed-tools: Read, Bash, Edit, MultiEdit, Write
 ---
 
 # SaaS Architecture
